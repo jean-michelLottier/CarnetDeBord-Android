@@ -7,7 +7,7 @@ import android.view.Menu;
 public class LoginActivity extends Activity {
 	//Test de commit ==> Kevin
 	//Test de commit ==> JM
-	
+	//Commit Ok
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
