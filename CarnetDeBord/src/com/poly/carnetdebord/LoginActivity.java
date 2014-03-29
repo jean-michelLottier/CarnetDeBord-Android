@@ -1,11 +1,12 @@
 package com.poly.carnetdebord;
 
-import android.os.Bundle;
 import android.app.Activity;
+import android.os.Bundle;
 import android.view.Menu;
 
 public class LoginActivity extends Activity {
 	//Test de commit ==> Kevin
+	//Test de commit ==> JM
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
