@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <TextView
+        android:id="@+id/textView1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="28dp"
+        android:text="Titre"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    <EditText
+        android:id="@+id/editText1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/textView1"
+        android:layout_marginTop="14dp"
+        android:text="Entrez le titre du billet"
+        android:ems="10" >
+
+        <requestFocus />
+    </EditText>
+
+    <EditText
+        android:id="@+id/editText2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/editText1"
+        android:layout_marginTop="15dp"
+        android:ems="10"
+        android:inputType="textMultiLine"
+        android:text="Tapez votre message" />
+
+    <RadioButton
+        android:id="@+id/rb_Type1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/editText2"
+        android:layout_marginTop="20dp"
+        android:textSize="12dp"
+        android:text="Type 1" />
+
+    <RadioButton
+        android:id="@+id/rb_Type2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/radioButton1"
+        android:layout_alignBottom="@+id/radioButton1"
+        android:layout_marginLeft="22dp"
+        android:layout_toRightOf="@+id/radioButton1"
+        android:textSize="12dp"
+        android:text="Type 2" />
+
+    <RadioButton
+        android:id="@+id/rb_Type3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/radioButton2"
+        android:layout_alignBottom="@+id/radioButton2"
+        android:layout_toRightOf="@+id/radioButton2"
+        android:textSize="12dp"
+        android:text="Type 3" />
+
+</RelativeLayout>
