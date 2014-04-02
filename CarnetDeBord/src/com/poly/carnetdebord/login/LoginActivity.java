@@ -1,4 +1,6 @@
-package com.poly.carnetdebord;
+package com.poly.carnetdebord.login;
+
+import com.poly.carnetdebord.R;
 
 import android.app.Activity;
 import android.os.Bundle;
