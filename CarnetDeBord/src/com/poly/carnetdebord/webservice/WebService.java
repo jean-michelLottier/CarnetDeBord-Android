@@ -9,7 +9,43 @@ import java.net.MalformedURLException;
 import java.net.ProtocolException;
 import java.net.URL;
 
-public class WebService implements IWebService {
+import android.os.AsyncTask;
+
+public class WebService extends AsyncTask<String, Response, Response> implements
+		IWebService {
+
+	public enum RequestMethod {
+		GET, POST, PUT;
+	};
+
+	private String content;
+	private RequestMethod requestMethod;
+
+	public String getContent() {
+		return content;
+	}
+
+	public void setContent(String content) {
+		this.content = content;
+	}
+
+	public RequestMethod getRequestMethod() {
+		return requestMethod;
+	}
+
+	public void setRequestMethod(RequestMethod requestMethod) {
+		this.requestMethod = requestMethod;
+	}
+
+	public WebService(RequestMethod requestMethod) {
+		this.requestMethod = requestMethod;
+		this.content = null;
+	}
+
+	public WebService(RequestMethod requestMethod, String content) {
+		this.requestMethod = requestMethod;
+		this.content = content;
+	}
 
 	@Override
 	public Response sendGetRequest(String urlPath) {
@@ -31,7 +67,6 @@ public class WebService implements IWebService {
 			response.setStatus(Response.BAD_REQUEST);
 			return response;
 		}
-
 		return response;
 	}
 
@@ -138,5 +173,24 @@ public class WebService implements IWebService {
 		osw.write(content);
 		osw.flush();
 		osw.close();
+	}
+
+	@Override
+	protected Response doInBackground(String... urlPaths) {
+		Response response;
+		switch (requestMethod) {
+		case POST:
+			response = sendPostRequest(urlPaths[0], content);
+			break;
+
+		case PUT:
+			response = sendPutRequest(urlPaths[0], content);
+			break;
+
+		default:
+			response = sendGetRequest(urlPaths[0]);
+			break;
+		}
+		return response;
 	}
 }
