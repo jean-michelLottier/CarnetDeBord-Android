@@ -9,8 +9,95 @@
     tools:context=".CreateTicketActivity" >
 
     <TextView
+        android:id="@+id/cb_ticket_location"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/hello_world" />
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:text=""
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    <TextView
+        android:id="@+id/cb_ticket_more_information"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/cb_ticket_rbg"
+        android:layout_below="@+id/cb_ticket_rbg"
+        android:layout_marginTop="15dp"
+        android:text="@string/cb_ticket_more_inf" />
+
+    <EditText
+        android:id="@+id/editText3"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/cb_ticket_rbg"
+        android:layout_below="@+id/cb_ticket_more_information"
+        android:hint="@string/cb_ticket_more_inf_example"
+        android:textSize="12sp"
+        android:scrollHorizontally="true"
+        android:scrollbars="horizontal"
+        android:ems="10" />
+
+    <EditText
+        android:id="@+id/cb_ticket_title"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/cb_ticket_location"
+        android:layout_marginTop="18dp"
+        android:ems="10"
+        android:scrollHorizontally="true"
+        android:scrollbars="horizontal"
+        android:hint="@string/cb_ticket_title" >
+
+        <requestFocus />
+    </EditText>
+
+    <EditText
+        android:id="@+id/cb_ticket_content"
+        android:layout_width="fill_parent"
+        android:layout_height="200dip"
+        android:layout_below="@+id/cb_ticket_title"
+        android:layout_centerHorizontal="true"
+        android:ems="10"
+        android:textSize="15sp"
+        android:inputType="textMultiLine" >
+    </EditText>
+
+    <RadioGroup
+        android:id="@+id/cb_ticket_rbg"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/cb_ticket_content"
+        android:layout_centerHorizontal="true"
+        android:orientation="horizontal" >
+
+        <RadioButton
+            android:id="@+id/cb_ticket_rb_place"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checked="true"
+            android:text="@string/cb_ticket_place" />
+
+        <RadioButton
+            android:id="@+id/cb_ticket_rb_event"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/cb_ticket_event" />
+
+        <RadioButton
+            android:id="@+id/cb_ticket_rb_anecdote"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/cb_ticket_anecdote" />
+    </RadioGroup>
+
+    <Button
+        android:id="@+id/cb_ticket_submit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:text="@string/cb_ticket_submit" />
 
 </RelativeLayout>
