@@ -17,7 +17,7 @@ import android.view.View;
  * @author jean-michel
  * 
  */
-public class GameDialogFragment extends DialogFragment {
+public class CarnetDeBordDialogFragment extends DialogFragment {
 	public static final String BOX_DIALOG_KEY = "box_dialog_key";
 
 	// Box dialog value
@@ -53,7 +53,7 @@ public class GameDialogFragment extends DialogFragment {
 
 		int boxID = getArguments().getInt(BOX_DIALOG_KEY);
 		switch (boxID) {
-		case 1:
+		case 0:
 			break;
 		default:
 			break;

@@ -9,15 +9,6 @@
     tools:context=".CreateTicketActivity" >
 
     <TextView
-        android:id="@+id/cb_ticket_location"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:text=""
-        android:textAppearance="?android:attr/textAppearanceMedium" />
-
-    <TextView
         android:id="@+id/cb_ticket_more_information"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -27,7 +18,7 @@
         android:text="@string/cb_ticket_more_inf" />
 
     <EditText
-        android:id="@+id/editText3"
+        android:id="@+id/cb_ticket_more_information_edit"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_alignLeft="@+id/cb_ticket_rbg"
@@ -97,7 +88,16 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
+        android:layout_alignRight="@+id/cb_ticket_more_information"
         android:text="@string/cb_ticket_submit" />
+
+    <CheckBox
+        android:id="@+id/cb_ticket_state"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/cb_ticket_submit"
+        android:layout_alignLeft="@+id/cb_ticket_more_information_edit"
+        android:textSize="12sp"
+        android:text="@string/cb_ticket_state" />
 
 </RelativeLayout>

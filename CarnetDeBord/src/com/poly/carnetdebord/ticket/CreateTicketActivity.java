@@ -5,16 +5,39 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.EditText;
+import android.widget.RadioGroup;
+import android.widget.RadioGroup.OnCheckedChangeListener;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.poly.carnetdebord.R;
+import com.poly.carnetdebord.geolocation.Geolocation;
+import com.poly.carnetdebord.geolocation.GeolocationService;
 import com.poly.carnetdebord.geolocation.IGeolocationService;
 
 public class CreateTicketActivity extends Activity {
+	// Service
 	private ITicketService ticketService;
 	private IGeolocationService geolocationService;
 
+	// Components
+	private TextView locationTextView;
+	private EditText titleEditText;
+	private EditText contentEditText;
+	private RadioGroup typeRadioGroup;
+	private EditText additionalInfEditText;
+	private CheckBox stateCheckBox;
+	private Button submitButton;
+	private String typeSelected = "PLACE";
+	private boolean stateSelected;
+
+	private static final String WARNING_EMPTY_FIELD_MESSAGE = "Vous devez remplir tous les champs obligatoires";
+
 	public ITicketService getTicketService() {
-		if(ticketService == null){
+		if (ticketService == null) {
 			ticketService = new TicketService(this);
 		}
 		return ticketService;
@@ -29,11 +52,44 @@ public class CreateTicketActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_create_ticket);
 
-//		Button butt = (Button) findViewById(R.id.button2);
-//		butt.setOnClickListener(onClickListener);
+		geolocationService = new GeolocationService(this);
+		locationTextView = (TextView) findViewById(R.id.cb_ticket_location);
+		new Thread(new Runnable() {
 
-//		geolocationService = new GeolocationService(this);
-//		geolocationService.start();
+			@Override
+			public void run() {
+				Geolocation geolocation = null;
+				int cpt = 0;
+				while (geolocation == null) {
+					System.out.println("************ cpt = " + cpt
+							+ "************");
+					if (cpt > 3) {
+						geolocationService.stopProgressBar();
+						return;
+					}
+					geolocation = geolocationService.getGeolocation();
+					try {
+						Thread.sleep(10000);
+					} catch (InterruptedException e) {
+						return;
+					}
+					cpt++;
+				}
+
+				if (geolocation != null) {
+					locationTextView.setText(geolocation.getFullAdress());
+				}
+			}
+		}).start();
+
+		typeRadioGroup = (RadioGroup) findViewById(R.id.cb_ticket_rbg);
+		typeRadioGroup.setOnCheckedChangeListener(onCheckedChangeListener);
+		additionalInfEditText = (EditText) findViewById(R.id.cb_ticket_more_information_edit);
+		stateCheckBox = (CheckBox) findViewById(R.id.cb_ticket_state);
+		stateCheckBox.setOnClickListener(onClickListener);
+
+		submitButton = (Button) findViewById(R.id.cb_ticket_submit);
+		submitButton.setOnClickListener(onClickListener);
 	}
 
 	@Override
@@ -48,25 +104,74 @@ public class CreateTicketActivity extends Activity {
 		@Override
 		public void onClick(View v) {
 			// TODO Auto-generated method stub
-//			if (v.getId() == R.id.button2) {
-//				ticketService = getTicketService();
-//				Ticket ticket = new Ticket();
-//				ticket.setMessage("j'ai enregistrer mon premier billet");
-//				ticket.setRelevance(0);
-//				ticket.setState(false);
-//				ticket.setTitle("test BDD");
-//				ticket.setType("PLACE");
-//				ticketService.saveTicket(ticket);
-//				ArrayList<Ticket> tickets = ticketService.researchByTitle("test BDD");
-//				if(tickets != null && !tickets.isEmpty()){
-//					System.out.println("size : " + tickets.size());
-//					for(Ticket ticket : tickets){
-//						ticket.show();
-//					}
-//				}else {
-//					System.out.println("tickets NULL OR EMPTY!");
-//				}
-//			}
+			switch (v.getId()) {
+			case R.id.cb_ticket_submit:
+				Ticket ticket = new Ticket();
+				titleEditText = (EditText) findViewById(R.id.cb_ticket_title);
+				contentEditText = (EditText) findViewById(R.id.cb_ticket_content);
+				if (titleEditText.getText() == null
+						|| titleEditText.getText().toString().isEmpty()
+						|| contentEditText.getText() == null
+						|| contentEditText.getText().toString().isEmpty()) {
+					Toast.makeText(CreateTicketActivity.this,
+							WARNING_EMPTY_FIELD_MESSAGE, Toast.LENGTH_SHORT)
+							.show();
+					return;
+				}
+
+				ticket.setTitle(titleEditText.getText().toString().trim());
+				ticket.setMessage(contentEditText.getText().toString().trim());
+				ticket.setType(typeSelected);
+				additionalInfEditText = (EditText) findViewById(R.id.cb_ticket_more_information_edit);
+				if (additionalInfEditText.getText() != null
+						&& !additionalInfEditText.getText().toString()
+								.isEmpty()) {
+					ticket.setAnnexInfo(additionalInfEditText.getText()
+							.toString());
+				}
+				ticket.setRelevance(0);
+				ticket.setState(stateSelected);
+
+				ticket.show();
+
+				// ticketService.saveTicket(ticket);
+				// ArrayList<Ticket> tickets =
+				// ticketService.researchByTitle("test BDD");
+				// if(tickets != null && !tickets.isEmpty()){
+				// System.out.println("size : " + tickets.size());
+				// for(Ticket ticket : tickets){
+				// ticket.show();
+				// }
+				// }else {
+				// System.out.println("tickets NULL OR EMPTY!");
+				// }
+				break;
+			case R.id.cb_ticket_state:
+				System.out.println("Check box selected");
+				stateSelected = !stateSelected;
+			default:
+				break;
+			}
+		}
+	};
+
+	OnCheckedChangeListener onCheckedChangeListener = new OnCheckedChangeListener() {
+
+		@Override
+		public void onCheckedChanged(RadioGroup group, int checkedId) {
+			switch (checkedId) {
+			case R.id.cb_ticket_rb_event:
+				System.out.println("Event radio button selected");
+				typeSelected = "EVENT";
+				break;
+			case R.id.cb_ticket_rb_anecdote:
+				System.out.println("Anecdote radio button selected");
+				break;
+			default:
+				System.out.println("Place radio button selected");
+				typeSelected = "PLACE";
+				break;
+			}
 		}
 	};
 }
