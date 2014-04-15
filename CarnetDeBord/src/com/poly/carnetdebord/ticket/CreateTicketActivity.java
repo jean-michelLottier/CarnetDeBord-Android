@@ -1,5 +1,7 @@
 package com.poly.carnetdebord.ticket;
 
+import java.util.ArrayList;
+
 import android.app.Activity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -134,17 +136,22 @@ public class CreateTicketActivity extends Activity {
 
 				ticket.show();
 
-				// ticketService.saveTicket(ticket);
-				// ArrayList<Ticket> tickets =
-				// ticketService.researchByTitle("test BDD");
-				// if(tickets != null && !tickets.isEmpty()){
-				// System.out.println("size : " + tickets.size());
-				// for(Ticket ticket : tickets){
-				// ticket.show();
-				// }
-				// }else {
-				// System.out.println("tickets NULL OR EMPTY!");
-				// }
+				// todo remplacer le userid par le userid qui est dans le
+				// sessionManager
+				ticket.setUserID(1);
+
+				ticketService = getTicketService();
+				ticketService.saveTicket(ticket);
+				ArrayList<Ticket> tickets = ticketService
+						.researchByTitle(ticket.getTitle());
+				if (tickets != null && !tickets.isEmpty()) {
+					System.out.println("size : " + tickets.size());
+					for (Ticket current : tickets) {
+						current.show();
+					}
+				} else {
+					System.out.println("tickets NULL OR EMPTY!");
+				}
 				break;
 			case R.id.cb_ticket_state:
 				System.out.println("Check box selected");
@@ -161,14 +168,12 @@ public class CreateTicketActivity extends Activity {
 		public void onCheckedChanged(RadioGroup group, int checkedId) {
 			switch (checkedId) {
 			case R.id.cb_ticket_rb_event:
-				System.out.println("Event radio button selected");
 				typeSelected = "EVENT";
 				break;
 			case R.id.cb_ticket_rb_anecdote:
-				System.out.println("Anecdote radio button selected");
+				typeSelected = "ANECDOTE";
 				break;
 			default:
-				System.out.println("Place radio button selected");
 				typeSelected = "PLACE";
 				break;
 			}
