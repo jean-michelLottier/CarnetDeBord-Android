@@ -4,7 +4,9 @@
     <string name="app_name">CarnetDeBord</string>
     <string name="action_settings">Settings</string>
     <string name="hello_world">Hello world!</string>
-    <string name="title_activity_create_ticket">CreateTicketActivity</string>
+    <string name="title_activity_create_ticket">Localisation</string>
+    <string name="titre_ticket">Titre</string>
+    <string name="title_activity_consult_ticket">ConsultTicketActivity</string>
     <string name="cb_ticket_title">Titre</string>
     <string name="cb_ticket_content">Rédiger votre message</string>
     <string name="cb_ticket_place">Lieu</string>
@@ -13,5 +15,9 @@
     <string name="cb_ticket_submit">Créer</string>
     <string name="cb_ticket_more_inf">Informations supplémentaires (optionnel)</string>
     <string name="cb_ticket_more_inf_example">Exemple : nom du restaurant, n° de téléphone...</string>
+    <string name="label_infos_billets">INFORMATIONS SUR LES BILLETS</string>
+    <string name="cb_ticket_state">Rendre le billet publique</string>
+    <string name="cb_ticket_map_description">CARTE</string>
+    <string name="cb_ticket_stats_description">STATISTIQUES</string>
 
 </resources>
