@@ -66,6 +66,10 @@ public class ConsultTicketActivity extends Activity {
 			new WebService(this, WebService.RequestMethod.GET).execute(urlPath);
 		}
 
+		getFragmentManager().findFragmentById(R.id.cb_ticket_map).getView()
+				.setVisibility(View.GONE);
+		findViewById(R.id.cb_ticket_graph_stats).setVisibility(View.GONE);
+
 		mapButton = (ImageButton) findViewById(R.id.cb_ticket_butt_map);
 		mapButton.setOnClickListener(onClickListener);
 		statsButton = (ImageButton) findViewById(R.id.cb_ticket_butt_stats);
@@ -88,12 +92,18 @@ public class ConsultTicketActivity extends Activity {
 				v = getFragmentManager().findFragmentById(R.id.cb_ticket_map)
 						.getView();
 				if (v.getVisibility() == View.VISIBLE) {
-					v.setVisibility(View.INVISIBLE);
+					v.setVisibility(View.GONE);
 				} else {
 					v.setVisibility(View.VISIBLE);
 				}
 				break;
-
+			case R.id.cb_ticket_butt_stats:
+				v = findViewById(R.id.cb_ticket_graph_stats);
+				if (v.getVisibility() == View.VISIBLE) {
+					v.setVisibility(View.GONE);
+				} else {
+					v.setVisibility(View.VISIBLE);
+				}
 			default:
 				break;
 			}

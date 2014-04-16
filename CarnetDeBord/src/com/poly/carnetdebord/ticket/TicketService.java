@@ -12,7 +12,6 @@ import org.json.simple.parser.JSONParser;
 
 import android.app.Activity;
 import android.os.AsyncTask;
-import android.view.View;
 import android.widget.TextView;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -65,8 +64,8 @@ public class TicketService implements ITicketService {
 	public ArrayList<Ticket> getUserTickets() {
 		System.out
 				.println("***********TicketService getUserTickets***********");
-		String urlPath = WebService.TICKET_URL_PATH.replace("userid", "1").replace("ticketid",
-				"1");
+		String urlPath = WebService.TICKET_URL_PATH.replace("userid", "1")
+				.replace("ticketid", "1");
 		System.out.println("urlpath : " + urlPath);
 		// webService = new WebService();
 		AsyncTask<String, Response, Response> response = new WebService(
@@ -214,7 +213,5 @@ public class TicketService implements ITicketService {
 		googleMap.addMarker(new MarkerOptions()
 				.title(geolocation.getTicket().getTitle())
 				.position(ticketPosition).snippet(snippet));
-		activity.getFragmentManager().findFragmentById(R.id.cb_ticket_map)
-				.getView().setVisibility(View.INVISIBLE);
 	}
 }

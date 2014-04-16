@@ -40,7 +40,7 @@
             <TextView
                 android:id="@+id/cb_ticket_content"
                 android:layout_width="match_parent"
-                android:layout_height="240dp"
+                android:layout_height="220dp"
                 android:layout_marginTop="30dp"
                 android:text="@string/cb_ticket_content" />
 
@@ -68,6 +68,12 @@
                 android:layout_marginTop="10dp"
                 android:contentDescription="@string/cb_ticket_stats_description"
                 android:src="@drawable/common_signin_btn_icon_disabled_dark" />
+
+            <LinearLayout
+                android:id="@+id/cb_ticket_graph_stats"
+                android:layout_width="fill_parent"
+                android:layout_height="210dip"
+                android:orientation="vertical" />
         </LinearLayout>
     </ScrollView>
 
