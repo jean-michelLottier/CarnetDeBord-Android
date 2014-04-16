@@ -66,46 +66,11 @@ public class CreateTicketActivity extends Activity {
 		setContentView(R.layout.activity_create_ticket);
 
 		geolocationService = new GeolocationService(this);
-		runOnUiThread((new Runnable() {
-
-			@Override
-			public void run() {
-				Geolocation geolocation = null;
-				int cpt = 0;
-				while (geolocation == null) {
-					System.out.println("************ cpt = " + cpt
-							+ "************");
-					if (cpt > 3) {
-						geolocationService.stopProgressBar();
-						geolocationService.pause();
-						return;
-					}
-					geolocation = geolocationService.getGeolocation();
-					try {
-						Thread.sleep(10000);
-					} catch (InterruptedException e) {
-						return;
-					}
-					cpt++;
-				}
-
-				geolocationService.pause();
-				if (geolocation != null && geolocation.getFullAdress() != null) {
-					if (geolocation.getFullAdress() == null) {
-						System.out
-								.println("!!!!!!!!!!!!full address null!!!!!!!!!!!!");
-					}
-					locationTextView = (TextView) findViewById(R.id.cb_ticket_location);
-					if (locationTextView == null) {
-						System.out
-								.println("!!!!!!!!!!!!locationTextView null!!!!!!!!!!!!");
-					}
-
-					locationTextView.setText(geolocation.getFullAdress());
-				}
-			}
-		}));
-		// .start();
+		if (geolocationService.isGPSActivated()) {
+			Geolocation geolocation = geolocationService.getGeolocation();
+			locationTextView = (TextView) findViewById(R.id.cb_ticket_location);
+			locationTextView.setText(geolocation.getFullAdress());
+		}
 
 		typeRadioGroup = (RadioGroup) findViewById(R.id.cb_ticket_rbg);
 		typeRadioGroup.setOnCheckedChangeListener(onCheckedChangeListener);

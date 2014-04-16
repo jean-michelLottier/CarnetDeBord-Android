@@ -14,4 +14,6 @@ public interface IGeolocationService {
 	public void saveLocalGeolocation(Geolocation geolocation);
 
 	public void saveRemoteGeolocation(Geolocation geolocation);
+
+	public boolean isGPSActivated();
 }
