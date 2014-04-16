@@ -28,6 +28,9 @@ public class WebService extends AsyncTask<String, Response, Response> implements
 	private ProgressDialog progressDialog;
 	private final Activity activity;
 
+	// http://serveur10.lerb.polymtl.ca:8080/CarnetDeBord/webresources/ticket/
+	public static final String TICKET_URL_PATH = "http://10.0.2.2:8080/CarnetDeBord/webresources/ticket/";
+
 	public String getContent() {
 		return content;
 	}

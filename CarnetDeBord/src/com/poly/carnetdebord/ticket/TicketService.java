@@ -29,8 +29,6 @@ import com.poly.carnetdebord.webservice.WebService;
 import com.poly.carnetdebord.webservice.WebService.RequestMethod;
 
 public class TicketService implements ITicketService {
-	// http://serveur10.lerb.polymtl.ca:8080/CarnetDeBord/webresources/ticket/
-	public static final String URL_PATH = "http://10.0.2.2:8080/CarnetDeBord/webresources/ticket/";
 
 	public static final String PARAMETER_TICKET_ID = "ticketID";
 	public static final String PARAMETER_USER_ID = "userID";
@@ -67,7 +65,7 @@ public class TicketService implements ITicketService {
 	public ArrayList<Ticket> getUserTickets() {
 		System.out
 				.println("***********TicketService getUserTickets***********");
-		String urlPath = URL_PATH.replace("userid", "1").replace("ticketid",
+		String urlPath = WebService.TICKET_URL_PATH.replace("userid", "1").replace("ticketid",
 				"1");
 		System.out.println("urlpath : " + urlPath);
 		// webService = new WebService();

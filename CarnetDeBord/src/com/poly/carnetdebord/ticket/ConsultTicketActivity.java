@@ -61,7 +61,7 @@ public class ConsultTicketActivity extends Activity {
 					.findLocalGeolocationByTicketID(ticket.getId());
 			geolocation.setTicket(ticket);
 		} else {
-			String urlPath = TicketService.URL_PATH + userID + "/id/"
+			String urlPath = WebService.TICKET_URL_PATH + userID + "/id/"
 					+ ticketID;
 			new WebService(this, WebService.RequestMethod.GET).execute(urlPath);
 		}
