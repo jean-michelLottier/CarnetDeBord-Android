@@ -202,7 +202,7 @@ public class GeolocationService implements IGeolocationService,
 		// TODO Auto-generated method stub
 		AsyncTask<String, Response, Response> response = new WebService(
 				activity, RequestMethod.POST, convertToJSON(geolocation)
-						.toString()).execute(TicketService.URL_PATH);
+						.toString()).execute(WebService.TICKET_URL_PATH);
 
 		try {
 			if (response.get().getStatus() == Response.BAD_REQUEST) {
