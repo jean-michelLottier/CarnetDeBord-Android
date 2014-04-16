@@ -8,4 +8,10 @@ public interface IGeolocationService {
 	public Geolocation getGeolocation();
 
 	public void stopProgressBar();
+
+	public Geolocation findLocalGeolocationByTicketID(long ticketID);
+
+	public void saveLocalGeolocation(Geolocation geolocation);
+
+	public void saveRemoteGeolocation(Geolocation geolocation);
 }

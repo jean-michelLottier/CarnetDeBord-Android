@@ -9,7 +9,12 @@ import java.net.MalformedURLException;
 import java.net.ProtocolException;
 import java.net.URL;
 
+import android.app.Activity;
+import android.app.ProgressDialog;
 import android.os.AsyncTask;
+
+import com.poly.carnetdebord.ticket.ConsultTicketActivity;
+import com.poly.carnetdebord.ticket.TicketService;
 
 public class WebService extends AsyncTask<String, Response, Response> implements
 		IWebService {
@@ -20,6 +25,8 @@ public class WebService extends AsyncTask<String, Response, Response> implements
 
 	private String content;
 	private RequestMethod requestMethod;
+	private ProgressDialog progressDialog;
+	private final Activity activity;
 
 	public String getContent() {
 		return content;
@@ -37,14 +44,17 @@ public class WebService extends AsyncTask<String, Response, Response> implements
 		this.requestMethod = requestMethod;
 	}
 
-	public WebService(RequestMethod requestMethod) {
+	public WebService(Activity activity, RequestMethod requestMethod) {
 		this.requestMethod = requestMethod;
 		this.content = null;
+		this.activity = activity;
 	}
 
-	public WebService(RequestMethod requestMethod, String content) {
+	public WebService(Activity activity, RequestMethod requestMethod,
+			String content) {
 		this.requestMethod = requestMethod;
 		this.content = content;
+		this.activity = activity;
 	}
 
 	@Override
@@ -177,7 +187,7 @@ public class WebService extends AsyncTask<String, Response, Response> implements
 
 	@Override
 	protected Response doInBackground(String... urlPaths) {
-		Response response;
+		Response response = new Response();
 		switch (requestMethod) {
 		case POST:
 			response = sendPostRequest(urlPaths[0], content);
@@ -191,6 +201,25 @@ public class WebService extends AsyncTask<String, Response, Response> implements
 			response = sendGetRequest(urlPaths[0]);
 			break;
 		}
+
 		return response;
+	}
+
+	@Override
+	protected void onPreExecute() {
+		progressDialog = ProgressDialog.show(activity, "Connexion",
+				"Veuillez patienter");
+	}
+
+	@Override
+	protected void onPostExecute(Response response) {
+		if (activity instanceof ConsultTicketActivity) {
+			TicketService ticketService = new TicketService(activity);
+			ticketService.initConsultTicketActivity(response);
+		}
+
+		if (progressDialog != null && progressDialog.isShowing()) {
+			progressDialog.dismiss();
+		}
 	}
 }

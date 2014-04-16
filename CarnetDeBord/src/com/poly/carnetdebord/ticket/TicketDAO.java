@@ -52,6 +52,23 @@ public class TicketDAO extends DAOBase implements ITicketDAO {
 	}
 
 	@Override
+	public void updateTicket(Ticket ticket) {
+		if (ticket == null) {
+			return;
+		}
+
+		ContentValues contentValues = new ContentValues();
+		contentValues.put(TICKET_TITLE, ticket.getTitle());
+		contentValues.put(TICKET_MESSAGE, ticket.getMessage());
+		contentValues.put(TICKET_STATE, ticket.getState());
+		contentValues.put(TICKET_TYPE, ticket.getType());
+		contentValues.put(TICKET_ANNEX_INFO, ticket.getAnnexInfo());
+
+		sqLiteDatabase.update(TICKET_TABLE_NAME, contentValues, TICKET_ID + "="
+				+ ticket.getId(), null);
+	}
+
+	@Override
 	public ArrayList<Ticket> findTicketsByTitle(String title) {
 		String strQuery = "SELECT * FROM " + TICKET_TABLE_NAME + " WHERE "
 				+ TICKET_TITLE + "=?";
@@ -68,6 +85,25 @@ public class TicketDAO extends DAOBase implements ITicketDAO {
 			tickets.add(ticket);
 		}
 		return tickets;
+	}
+
+	@Override
+	public Ticket findTicketByID(long id) {
+		if (id < 0) {
+			return null;
+		}
+
+		String strQuery = "SELECT * FROM " + TICKET_TABLE_NAME + " WHERE "
+				+ TICKET_ID + " = ?";
+
+		Cursor cursor = sqLiteDatabase.rawQuery(strQuery,
+				new String[] { String.valueOf(id) });
+
+		if (!cursor.moveToFirst()) {
+			return null;
+		}
+
+		return cursorToTicket(cursor);
 	}
 
 	private Ticket cursorToTicket(Cursor cursor) {
@@ -105,4 +141,5 @@ public class TicketDAO extends DAOBase implements ITicketDAO {
 
 		return ticket;
 	}
+
 }

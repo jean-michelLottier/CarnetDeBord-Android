@@ -14,6 +14,15 @@ public interface ITicketDAO {
 
 	/**
 	 * <p>
+	 * Update title, message, annex info, type, or state of ticket.
+	 * </p>
+	 * 
+	 * @param ticket
+	 */
+	public void updateTicket(Ticket ticket);
+
+	/**
+	 * <p>
 	 * Find tickets by title.
 	 * </p>
 	 * 
@@ -21,4 +30,14 @@ public interface ITicketDAO {
 	 * @return
 	 */
 	public ArrayList<Ticket> findTicketsByTitle(String title);
+
+	/**
+	 * <p>
+	 * Find ticket by id.
+	 * </p>
+	 * 
+	 * @param id
+	 * @return Ticket otherwise null.
+	 */
+	public Ticket findTicketByID(long id);
 }

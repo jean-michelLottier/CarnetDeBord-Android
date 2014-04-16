@@ -98,7 +98,7 @@ public class Ticket {
 		System.out.println("id : " + id + ", userFK : " + userID
 				+ ", postedDate : " + postedDate + ", title : " + title
 				+ ", message : " + message + ", type : " + type
-//				+ ", ammexInfo : " + annexInfo == null ? "null" : annexInfo
+				// + ", ammexInfo : " + annexInfo == null ? "null" : annexInfo
 				+ ", state : " + state + ", relevance : " + relevance);
 	}
 }

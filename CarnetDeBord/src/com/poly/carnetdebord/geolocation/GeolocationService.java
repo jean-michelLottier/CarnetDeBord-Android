@@ -3,21 +3,29 @@ package com.poly.carnetdebord.geolocation;
 import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
+import java.util.concurrent.ExecutionException;
+
+import org.json.simple.JSONObject;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.os.AsyncTask;
 import android.os.Bundle;
+
+import com.poly.carnetdebord.ticket.TicketService;
+import com.poly.carnetdebord.webservice.Response;
+import com.poly.carnetdebord.webservice.WebService;
+import com.poly.carnetdebord.webservice.WebService.RequestMethod;
 
 public class GeolocationService implements IGeolocationService,
 		LocationListener {
 
-	private final Context context;
+	private final Activity activity;
 	private final LocationManager locationManager;
 	private final Geocoder geocoder;
 	private final ProgressDialog progressDialog;
@@ -25,19 +33,26 @@ public class GeolocationService implements IGeolocationService,
 	/**
 	 * longitude in degrees
 	 */
-	private double longitude;
+	public static double longitude;
 	/**
 	 * latitude in degrees
 	 */
-	private double latitude;
+	public static double latitude;
 	private boolean isGPSActivated;
 
-	public GeolocationService(Context context) {
-		this.context = context;
-		this.locationManager = (LocationManager) context
+	private static String PARAMETER_GEOLOCATION_ID = "geolocationID";
+	private static String PARAMETER_LATITUDE = "latitude";
+	private static String PARAMETER_LONGITUDE = "longitude";
+	private static String PARAMETER_ADDRESS = "address";
+
+	private IGeolocationDAO geolocationDAO;
+
+	public GeolocationService(Activity activity) {
+		this.activity = activity;
+		this.locationManager = (LocationManager) activity
 				.getSystemService(Activity.LOCATION_SERVICE);
-		this.geocoder = new Geocoder(context, Locale.getDefault());
-		progressDialog = ProgressDialog.show(context, "Géolocalisation",
+		this.geocoder = new Geocoder(activity, Locale.getDefault());
+		progressDialog = ProgressDialog.show(activity, "Géolocalisation",
 				"En cours", true);
 		start();
 	}
@@ -160,5 +175,70 @@ public class GeolocationService implements IGeolocationService,
 					.println("************** onLocationChanged fermeture progress dialog **************");
 			progressDialog.dismiss();
 		}
+	}
+
+	@Override
+	public Geolocation findLocalGeolocationByTicketID(long ticketID) {
+		if (ticketID < 0) {
+			return null;
+		}
+
+		geolocationDAO = new GeolocationDAO(activity);
+		return geolocationDAO.findGeolocationByTicketID(ticketID);
+	}
+
+	@Override
+	public void saveLocalGeolocation(Geolocation geolocation) {
+		if (geolocation == null) {
+			return;
+		}
+
+		geolocationDAO = new GeolocationDAO(activity);
+		geolocationDAO.persist(geolocation);
+	}
+
+	@Override
+	public void saveRemoteGeolocation(Geolocation geolocation) {
+		// TODO Auto-generated method stub
+		AsyncTask<String, Response, Response> response = new WebService(
+				activity, RequestMethod.POST, convertToJSON(geolocation)
+						.toString()).execute(TicketService.URL_PATH);
+
+		try {
+			if (response.get().getStatus() == Response.BAD_REQUEST) {
+				System.err.println("Request no valid!");
+				return;
+			} else if (response.get().getStatus() == Response.INTERNAL_SERVER_ERROR) {
+				System.err.println("Problem with server");
+				return;
+			}
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return;
+		} catch (ExecutionException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return;
+		}
+	}
+
+	@SuppressWarnings("unchecked")
+	public static JSONObject convertToJSON(Geolocation geolocation) {
+		if (geolocation == null) {
+			return null;
+		}
+
+		JSONObject json = TicketService.convertToJSON(geolocation.getTicket());
+		if (json == null) {
+			json = new JSONObject();
+		}
+
+		json.put(PARAMETER_GEOLOCATION_ID, geolocation.getId());
+		json.put(PARAMETER_LATITUDE, geolocation.getLatitude());
+		json.put(PARAMETER_LONGITUDE, geolocation.getLongitude());
+		json.put(PARAMETER_ADDRESS, geolocation.getAddress());
+
+		return json;
 	}
 }

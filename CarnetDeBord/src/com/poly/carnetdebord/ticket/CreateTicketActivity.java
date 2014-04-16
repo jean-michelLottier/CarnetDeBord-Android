@@ -19,11 +19,13 @@ import com.poly.carnetdebord.R;
 import com.poly.carnetdebord.geolocation.Geolocation;
 import com.poly.carnetdebord.geolocation.GeolocationService;
 import com.poly.carnetdebord.geolocation.IGeolocationService;
+import com.poly.carnetdebord.localstorage.SessionManager;
 
 public class CreateTicketActivity extends Activity {
 	// Service
 	private ITicketService ticketService;
 	private IGeolocationService geolocationService;
+	private SessionManager session;
 
 	// Components
 	private TextView locationTextView;
@@ -49,14 +51,22 @@ public class CreateTicketActivity extends Activity {
 		this.ticketService = ticketService;
 	}
 
+	private SessionManager initSession() {
+		session = new SessionManager(this);
+		return session;
+	}
+
+	private void quitSession() {
+		session.clearSession();
+	}
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_create_ticket);
 
 		geolocationService = new GeolocationService(this);
-		locationTextView = (TextView) findViewById(R.id.cb_ticket_location);
-		new Thread(new Runnable() {
+		runOnUiThread((new Runnable() {
 
 			@Override
 			public void run() {
@@ -67,6 +77,7 @@ public class CreateTicketActivity extends Activity {
 							+ "************");
 					if (cpt > 3) {
 						geolocationService.stopProgressBar();
+						geolocationService.pause();
 						return;
 					}
 					geolocation = geolocationService.getGeolocation();
@@ -78,11 +89,23 @@ public class CreateTicketActivity extends Activity {
 					cpt++;
 				}
 
-				if (geolocation != null) {
+				geolocationService.pause();
+				if (geolocation != null && geolocation.getFullAdress() != null) {
+					if (geolocation.getFullAdress() == null) {
+						System.out
+								.println("!!!!!!!!!!!!full address null!!!!!!!!!!!!");
+					}
+					locationTextView = (TextView) findViewById(R.id.cb_ticket_location);
+					if (locationTextView == null) {
+						System.out
+								.println("!!!!!!!!!!!!locationTextView null!!!!!!!!!!!!");
+					}
+
 					locationTextView.setText(geolocation.getFullAdress());
 				}
 			}
-		}).start();
+		}));
+		// .start();
 
 		typeRadioGroup = (RadioGroup) findViewById(R.id.cb_ticket_rbg);
 		typeRadioGroup.setOnCheckedChangeListener(onCheckedChangeListener);
@@ -105,10 +128,8 @@ public class CreateTicketActivity extends Activity {
 
 		@Override
 		public void onClick(View v) {
-			// TODO Auto-generated method stub
 			switch (v.getId()) {
 			case R.id.cb_ticket_submit:
-				Ticket ticket = new Ticket();
 				titleEditText = (EditText) findViewById(R.id.cb_ticket_title);
 				contentEditText = (EditText) findViewById(R.id.cb_ticket_content);
 				if (titleEditText.getText() == null
@@ -121,6 +142,7 @@ public class CreateTicketActivity extends Activity {
 					return;
 				}
 
+				Ticket ticket = new Ticket();
 				ticket.setTitle(titleEditText.getText().toString().trim());
 				ticket.setMessage(contentEditText.getText().toString().trim());
 				ticket.setType(typeSelected);
@@ -138,10 +160,20 @@ public class CreateTicketActivity extends Activity {
 
 				// todo remplacer le userid par le userid qui est dans le
 				// sessionManager
+				// session = initSession();
+				// ticket.setUserID(session.getUserID());
 				ticket.setUserID(1);
 
 				ticketService = getTicketService();
-				ticketService.saveTicket(ticket);
+				ticketService.saveLocalTicket(ticket);
+
+				Geolocation geolocation = geolocationService.getGeolocation();
+				geolocation.setAddress(geolocation.getFullAdress());
+				geolocation.setTicket(ticket);
+				geolocationService.saveLocalGeolocation(geolocation);
+				geolocationService.saveRemoteGeolocation(geolocation);
+
+				// ////////TEST//////////////
 				ArrayList<Ticket> tickets = ticketService
 						.researchByTitle(ticket.getTitle());
 				if (tickets != null && !tickets.isEmpty()) {
@@ -152,6 +184,7 @@ public class CreateTicketActivity extends Activity {
 				} else {
 					System.out.println("tickets NULL OR EMPTY!");
 				}
+				// ////////END TEST////////////
 				break;
 			case R.id.cb_ticket_state:
 				System.out.println("Check box selected");

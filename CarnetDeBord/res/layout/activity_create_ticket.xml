@@ -35,11 +35,11 @@
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_below="@+id/cb_ticket_location"
-        android:layout_marginTop="18dp"
+        android:layout_marginTop="30dp"
         android:ems="10"
+        android:hint="@string/cb_ticket_title"
         android:scrollHorizontally="true"
-        android:scrollbars="horizontal"
-        android:hint="@string/cb_ticket_title" >
+        android:scrollbars="horizontal" >
 
         <requestFocus />
     </EditText>
@@ -99,5 +99,14 @@
         android:layout_alignLeft="@+id/cb_ticket_more_information_edit"
         android:textSize="12sp"
         android:text="@string/cb_ticket_state" />
+
+    <TextView
+        android:id="@+id/cb_ticket_location"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:text=""
+        android:textAppearance="?android:attr/textAppearanceMedium" />
 
 </RelativeLayout>
