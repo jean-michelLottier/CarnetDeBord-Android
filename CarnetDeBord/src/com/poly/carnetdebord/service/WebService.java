@@ -1,4 +1,4 @@
-package com.poly.carnetdebord.webservice;
+package com.poly.carnetdebord.service;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -11,9 +11,16 @@ import java.net.URL;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
+import android.os.Bundle;
+import android.widget.Toast;
 
+import com.poly.carnetdebord.dialogbox.CarnetDeBordDialogFragment;
 import com.poly.carnetdebord.ticket.ConsultTicketActivity;
+import com.poly.carnetdebord.ticket.CreateTicketActivity;
 import com.poly.carnetdebord.ticket.TicketService;
 
 public class WebService extends AsyncTask<String, Response, Response> implements
@@ -30,6 +37,7 @@ public class WebService extends AsyncTask<String, Response, Response> implements
 
 	// http://serveur10.lerb.polymtl.ca:8080/CarnetDeBord/webresources/ticket/
 	public static final String TICKET_URL_PATH = "http://10.0.2.2:8080/CarnetDeBord/webresources/ticket/";
+	public static final String MAP_GOOGLE_URL_PATH = "http://maps.google.com/maps/api/geocode/json?latlng=latitude,longitude&sensor=true";
 
 	public String getContent() {
 		return content;
@@ -119,14 +127,18 @@ public class WebService extends AsyncTask<String, Response, Response> implements
 
 	@Override
 	public Response sendPutRequest(String urlPath, String content) {
+
+		System.out.println("Envoi...");
 		Response response = new Response();
 		if (content == null || content.isEmpty()) {
+			System.out.println("Json non reconnu");
 			response.setStatus(Response.BAD_REQUEST);
 			return response;
 		}
 
 		HttpURLConnection con = openConnection(urlPath);
 		if (con == null) {
+			System.out.println("Mauvais URL");
 			response.setStatus(Response.BAD_REQUEST);
 			return response;
 		}
@@ -138,16 +150,21 @@ public class WebService extends AsyncTask<String, Response, Response> implements
 			con.setRequestProperty("Accept", "application/json");
 			con.connect();
 			writeContentRequest(con, content);
+			System.out.println("Mauvaise connection");
 			response.setStatus(con.getResponseCode());
 			response.setContent(readResponse(con));
 			con.disconnect();
+			System.out.println("Mauvaise Reponse");
 		} catch (ProtocolException e) {
+			System.out.println("Erreur protocol");
 			return null;
 		} catch (IOException e) {
 			response.setStatus(Response.BAD_REQUEST);
+			System.out.println("Erreur IOexception:"+con.getErrorStream());
 			return response;
 		}
 
+		System.out.println("Reception depuis le serveur");
 		return response;
 	}
 
@@ -190,6 +207,22 @@ public class WebService extends AsyncTask<String, Response, Response> implements
 
 	@Override
 	protected Response doInBackground(String... urlPaths) {
+		while (!isConnectingToInternet()) {
+			CarnetDeBordDialogFragment dialogFragment = new CarnetDeBordDialogFragment();
+			Bundle args = new Bundle();
+			args.putInt(CarnetDeBordDialogFragment.BOX_DIALOG_KEY,
+					CarnetDeBordDialogFragment.BOX_DIALOG_DISCONNECTED);
+			args.putString(CarnetDeBordDialogFragment.BOX_DIALOG_PARAMETER_URL,
+					urlPaths[0]);
+			args.putString(
+					CarnetDeBordDialogFragment.BOX_DIALOG_PARAMETER_REQUESTMETHOD,
+					requestMethod.toString());
+			dialogFragment.setArguments(args);
+			dialogFragment.show(activity.getFragmentManager(),
+					"CarnetDeBordDialogFragment");
+			return null;
+		}
+
 		Response response = new Response();
 		switch (requestMethod) {
 		case POST:
@@ -205,24 +238,55 @@ public class WebService extends AsyncTask<String, Response, Response> implements
 			break;
 		}
 
+		response.setUrl(urlPaths[0]);
 		return response;
 	}
 
 	@Override
 	protected void onPreExecute() {
-		progressDialog = ProgressDialog.show(activity, "Connexion",
-				"Veuillez patienter");
+		if (activity instanceof ConsultTicketActivity
+				|| activity instanceof CreateTicketActivity) {
+			progressDialog = ProgressDialog.show(activity, "Connexion",
+					"Veuillez patienter");
+		}
 	}
 
 	@Override
 	protected void onPostExecute(Response response) {
+		if (response == null) {
+			Toast.makeText(activity, "Vous êtes déconnecté.", Toast.LENGTH_LONG)
+					.show();
+			return;
+		}
+
 		if (activity instanceof ConsultTicketActivity) {
 			TicketService ticketService = new TicketService(activity);
 			ticketService.initConsultTicketActivity(response);
 		}
 
+		if (activity instanceof CreateTicketActivity) {
+			TicketService ticketService = new TicketService(activity);
+			ticketService.initCreateTicketActivity(response);
+		}
+
 		if (progressDialog != null && progressDialog.isShowing()) {
 			progressDialog.dismiss();
 		}
+	}
+
+	@Override
+	public boolean isConnectingToInternet() {
+		ConnectivityManager connectivity = (ConnectivityManager) activity
+				.getSystemService(Context.CONNECTIVITY_SERVICE);
+		if (connectivity != null) {
+			NetworkInfo[] info = connectivity.getAllNetworkInfo();
+			if (info != null)
+				for (int i = 0; i < info.length; i++)
+					if (info[i].getState() == NetworkInfo.State.CONNECTED) {
+						return true;
+					}
+
+		}
+		return false;
 	}
 }

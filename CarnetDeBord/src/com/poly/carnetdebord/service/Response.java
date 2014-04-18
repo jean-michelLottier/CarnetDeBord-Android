@@ -1,4 +1,4 @@
-package com.poly.carnetdebord.webservice;
+package com.poly.carnetdebord.service;
 
 /**
  * <p>
@@ -9,12 +9,22 @@ package com.poly.carnetdebord.webservice;
  * 
  */
 public class Response {
+
 	public static final int BAD_REQUEST = 400;
 	public static final int UNAUTHORIZED = 401;
 	public static final int INTERNAL_SERVER_ERROR = 500;
 
 	private int status;
 	private String content;
+	private String url;
+
+	public String getUrl() {
+		return url;
+	}
+
+	public void setUrl(String url) {
+		this.url = url;
+	}
 
 	public int getStatus() {
 		return status;

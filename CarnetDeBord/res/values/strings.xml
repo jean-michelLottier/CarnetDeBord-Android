@@ -19,5 +19,8 @@
     <string name="cb_ticket_state">Rendre le billet publique</string>
     <string name="cb_ticket_map_description">CARTE</string>
     <string name="cb_ticket_stats_description">STATISTIQUES</string>
+    <string name="title_activity_register">RegisterActivity</string>
+    
+    
 
 </resources>

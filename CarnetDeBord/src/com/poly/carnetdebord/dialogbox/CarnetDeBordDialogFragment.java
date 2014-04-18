@@ -5,9 +5,15 @@ import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnKeyListener;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.View;
+
+import com.poly.carnetdebord.login.LoginActivity;
+import com.poly.carnetdebord.ticket.CreateTicketActivity;
+import com.poly.carnetdebord.service.WebService;
+import com.poly.carnetdebord.service.WebService.RequestMethod;
 
 /**
  * <p>
@@ -21,10 +27,17 @@ public class CarnetDeBordDialogFragment extends DialogFragment {
 	public static final String BOX_DIALOG_KEY = "box_dialog_key";
 
 	// Box dialog value
+	public static final int BOX_DIALOG_DISCONNECTED = 0;
 
 	// Box dialog parameters
+	public static final String BOX_DIALOG_PARAMETER_URL = "urlPath";
+	public static final String BOX_DIALOG_PARAMETER_REQUESTMETHOD = "requestMethod";
 
 	// Box dialog contents
+	private static final String BOX_DIALOG_BUTTON_RETRY = "Réessayer";
+	private static final String BOX_DIALOG_BUTTON_QUIT_API = "Quitter l'application";
+	private static final String BOX_DIALOG_DISCONNECTED_TITLE = "Information";
+	private static final String BOX_DIALOG_DISCONNECTED_MESSAGE = "Vous n'êtes plus connecté au réseau internet.";
 
 	private View customView;
 
@@ -53,11 +66,63 @@ public class CarnetDeBordDialogFragment extends DialogFragment {
 
 		int boxID = getArguments().getInt(BOX_DIALOG_KEY);
 		switch (boxID) {
-		case 0:
+		case BOX_DIALOG_DISCONNECTED:
+			String urlPath = getArguments().getString(BOX_DIALOG_PARAMETER_URL);
+			String request = getArguments().getString(
+					BOX_DIALOG_PARAMETER_REQUESTMETHOD);
+			RequestMethod requestMethod;
+			if (request.equals(RequestMethod.PUT)) {
+				requestMethod = RequestMethod.PUT;
+			} else if (request.equals(RequestMethod.POST)) {
+				requestMethod = RequestMethod.POST;
+			} else {
+				requestMethod = RequestMethod.GET;
+			}
+			alertDialog = initDisconnectedBoxDialog(alertDialog, urlPath,
+					requestMethod);
 			break;
 		default:
 			break;
 		}
+		return alertDialog;
+	}
+
+	private AlertDialog initDisconnectedBoxDialog(AlertDialog alertDialog,
+			final String urlPath, final RequestMethod requestMethod) {
+		alertDialog.setCanceledOnTouchOutside(false);
+		alertDialog.setTitle(BOX_DIALOG_DISCONNECTED_TITLE);
+		alertDialog.setMessage(BOX_DIALOG_DISCONNECTED_MESSAGE);
+		alertDialog.setButton(AlertDialog.BUTTON_POSITIVE,
+				BOX_DIALOG_BUTTON_RETRY, new DialogInterface.OnClickListener() {
+
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						CreateTicketActivity activity = (CreateTicketActivity) ((AlertDialog) dialog)
+								.getOwnerActivity();
+						new WebService(activity, requestMethod)
+								.execute(urlPath);
+						dismiss();
+					}
+				});
+
+		alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE,
+				BOX_DIALOG_BUTTON_QUIT_API,
+				new DialogInterface.OnClickListener() {
+
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						// TODO Auto-generated method stub
+						CreateTicketActivity activity = (CreateTicketActivity) ((AlertDialog) dialog)
+								.getOwnerActivity();
+
+						Intent intent = new Intent(activity,
+								LoginActivity.class);
+						intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+						startActivity(intent);
+						dismiss();
+					}
+				});
+
 		return alertDialog;
 	}
 

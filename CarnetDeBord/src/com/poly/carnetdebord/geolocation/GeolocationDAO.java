@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 
 import com.poly.carnetdebord.localstorage.DAOBase;
+import com.poly.carnetdebord.localstorage.DatabaseHandler;
 
 public class GeolocationDAO extends DAOBase implements IGeolocationDAO {
 
@@ -20,24 +21,24 @@ public class GeolocationDAO extends DAOBase implements IGeolocationDAO {
 		}
 
 		ContentValues contentValues = new ContentValues();
-		contentValues.put(databaseHandler.GEOLOCATION_TICKET_FK, geolocation
+		contentValues.put(DatabaseHandler.GEOLOCATION_TICKET_FK, geolocation
 				.getTicket().getId());
-		contentValues.put(databaseHandler.GEOLOCATION_LATITUDE,
+		contentValues.put(DatabaseHandler.GEOLOCATION_LATITUDE,
 				geolocation.getLatitude());
-		contentValues.put(databaseHandler.GEOLOCATION_LONGITUDE,
+		contentValues.put(DatabaseHandler.GEOLOCATION_LONGITUDE,
 				geolocation.getLongitude());
-		contentValues.put(databaseHandler.GEOLOCATION_ADDRESS,
+		contentValues.put(DatabaseHandler.GEOLOCATION_ADDRESS,
 				geolocation.getAddress());
 
-		sqLiteDatabase.insert(databaseHandler.GEOLOCATION_TABLE_NAME, null,
+		sqLiteDatabase.insert(DatabaseHandler.GEOLOCATION_TABLE_NAME, null,
 				contentValues);
 	}
 
 	@Override
 	public Geolocation findGeolocationByTicketID(long ticketID) {
 		String strQuery = "SELECT * FROM "
-				+ databaseHandler.GEOLOCATION_TABLE_NAME + " WHERE "
-				+ databaseHandler.GEOLOCATION_TICKET_FK + " = ?";
+				+ DatabaseHandler.GEOLOCATION_TABLE_NAME + " WHERE "
+				+ DatabaseHandler.GEOLOCATION_TICKET_FK + " = ?";
 
 		Cursor cursor = sqLiteDatabase.rawQuery(strQuery,
 				new String[] { String.valueOf(ticketID) });
@@ -56,13 +57,13 @@ public class GeolocationDAO extends DAOBase implements IGeolocationDAO {
 
 		Geolocation geolocation = new Geolocation();
 		geolocation.setId(cursor.getLong(cursor
-				.getColumnIndex(databaseHandler.TABLE_KEY)));
+				.getColumnIndex(DatabaseHandler.TABLE_KEY)));
 		geolocation.setLatitude(cursor.getDouble(cursor
-				.getColumnIndex(databaseHandler.GEOLOCATION_LATITUDE)));
+				.getColumnIndex(DatabaseHandler.GEOLOCATION_LATITUDE)));
 		geolocation.setLongitude(cursor.getDouble(cursor
-				.getColumnIndex(databaseHandler.GEOLOCATION_LONGITUDE)));
+				.getColumnIndex(DatabaseHandler.GEOLOCATION_LONGITUDE)));
 		geolocation.setAddress(cursor.getString(cursor
-				.getColumnIndex(databaseHandler.GEOLOCATION_ADDRESS)));
+				.getColumnIndex(DatabaseHandler.GEOLOCATION_ADDRESS)));
 
 		return geolocation;
 	}

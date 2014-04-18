@@ -1,0 +1,38 @@
+<resources>
+	<string name="title_activity_login">Connexion</string>
+    <string name="title_activity_register">Enregistrement</string>
+
+    <!-- Strings related to login -->
+    <string name="action_sign_in">Se connecter</string>
+    <string name="action_register">Créer un compte</string>
+    <string name="action_forgot_password">Mot de passe perdu?</string>
+    <string name="login_progress_signing_in">Connexion en cours…</string>
+    <string name="remember_user">Se souvenir de moi</string>
+    
+    
+    <!-- Strings related to register -->
+    <string name="action_register_in">S\'enregistrer</string>
+    <string name="login_progress_registering_in">Enregistrement en cours...</string>
+
+    
+    <!-- Strings related to errors -->
+    <string name="error_invalid_email">L\'adresse email est invalide</string>
+    <string name="error_invalid_password">Le mot de passe doit comprendre plus de 4 caractères</string>
+    <string name="error_confirm_password">Le mot de passe et la confirmation du mot de passe doivent correspondre</string>
+    <string name="error_incorrect_password">Le mot de passe est incorrect</string>
+    <string name="error_field_required">Ce champ est obligatoire</string>
+    
+    
+    <!-- Strings related to options -->
+    
+    
+    
+    <!-- Strings related to prompt -->
+    <string name="prompt_email">Email</string>
+    <string name="prompt_password">Mot de passe</string>
+    <string name="prompt_firstname">Nom</string>
+    <string name="prompt_lastname">Prénom</string>
+    <string name="prompt_confirmPassword">Confirmer mot de passe</string>
+    <string name="prompt_birthday">Date de naissance</string>
+    
+</resources>

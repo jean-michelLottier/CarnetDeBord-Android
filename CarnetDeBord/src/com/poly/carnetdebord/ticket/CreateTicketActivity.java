@@ -66,11 +66,6 @@ public class CreateTicketActivity extends Activity {
 		setContentView(R.layout.activity_create_ticket);
 
 		geolocationService = new GeolocationService(this);
-		if (geolocationService.isGPSActivated()) {
-			Geolocation geolocation = geolocationService.getGeolocation();
-			locationTextView = (TextView) findViewById(R.id.cb_ticket_location);
-			locationTextView.setText(geolocation.getFullAdress());
-		}
 
 		typeRadioGroup = (RadioGroup) findViewById(R.id.cb_ticket_rbg);
 		typeRadioGroup.setOnCheckedChangeListener(onCheckedChangeListener);
@@ -132,8 +127,10 @@ public class CreateTicketActivity extends Activity {
 				ticketService = getTicketService();
 				ticketService.saveLocalTicket(ticket);
 
+				locationTextView = (TextView) findViewById(R.id.cb_ticket_location);
 				Geolocation geolocation = geolocationService.getGeolocation();
-				geolocation.setAddress(geolocation.getFullAdress());
+				geolocation.setAddress(String.valueOf(locationTextView
+						.getText()));
 				geolocation.setTicket(ticket);
 				geolocationService.saveLocalGeolocation(geolocation);
 				geolocationService.saveRemoteGeolocation(geolocation);

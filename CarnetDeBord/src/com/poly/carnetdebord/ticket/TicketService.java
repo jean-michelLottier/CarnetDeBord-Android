@@ -7,11 +7,13 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Locale;
 
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
 import android.app.Activity;
 import android.os.AsyncTask;
+import android.os.Bundle;
 import android.widget.TextView;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -20,12 +22,13 @@ import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.poly.carnetdebord.R;
+import com.poly.carnetdebord.dialogbox.CarnetDeBordDialogFragment;
 import com.poly.carnetdebord.geolocation.Geolocation;
 import com.poly.carnetdebord.localstorage.SessionManager;
-import com.poly.carnetdebord.webservice.IWebService;
-import com.poly.carnetdebord.webservice.Response;
-import com.poly.carnetdebord.webservice.WebService;
-import com.poly.carnetdebord.webservice.WebService.RequestMethod;
+import com.poly.carnetdebord.service.IWebService;
+import com.poly.carnetdebord.service.Response;
+import com.poly.carnetdebord.service.WebService;
+import com.poly.carnetdebord.service.WebService.RequestMethod;
 
 public class TicketService implements ITicketService {
 
@@ -213,5 +216,42 @@ public class TicketService implements ITicketService {
 		googleMap.addMarker(new MarkerOptions()
 				.title(geolocation.getTicket().getTitle())
 				.position(ticketPosition).snippet(snippet));
+	}
+
+	@Override
+	public void initCreateTicketActivity(Response response) {
+		if (response == null || response.getStatus() == Response.BAD_REQUEST) {
+			CarnetDeBordDialogFragment dialogFragment = new CarnetDeBordDialogFragment();
+			Bundle args = new Bundle();
+			args.putInt(CarnetDeBordDialogFragment.BOX_DIALOG_KEY,
+					CarnetDeBordDialogFragment.BOX_DIALOG_DISCONNECTED);
+			args.putString(CarnetDeBordDialogFragment.BOX_DIALOG_PARAMETER_URL,
+					response.getUrl());
+			dialogFragment.setArguments(args);
+			args.putString(
+					CarnetDeBordDialogFragment.BOX_DIALOG_PARAMETER_REQUESTMETHOD,
+					RequestMethod.GET.toString());
+			dialogFragment.show(activity.getFragmentManager(),
+					"CarnetDeBordDialogFragment");
+			return;
+		}
+		String address = null;
+		try {
+			JSONObject json = (JSONObject) new JSONParser().parse(response
+					.getContent());
+			JSONArray jsona = (JSONArray) new JSONParser().parse(json.get(
+					"results").toString());
+			json = (JSONObject) new JSONParser().parse(jsona.get(0).toString());
+			address = json.get("formatted_address").toString();
+		} catch (org.json.simple.parser.ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		if (address != null) {
+			TextView locationTextView = (TextView) activity
+					.findViewById(R.id.cb_ticket_location);
+			locationTextView.setText(address);
+		}
 	}
 }

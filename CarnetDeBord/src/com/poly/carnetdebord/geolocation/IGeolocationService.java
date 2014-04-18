@@ -1,5 +1,7 @@
 package com.poly.carnetdebord.geolocation;
 
+import android.location.Location;
+
 public interface IGeolocationService {
 	public boolean start();
 
@@ -16,4 +18,6 @@ public interface IGeolocationService {
 	public void saveRemoteGeolocation(Geolocation geolocation);
 
 	public boolean isGPSActivated();
+
+	public Location getLocation();
 }

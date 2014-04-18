@@ -1,8 +1,5 @@
 package com.poly.carnetdebord.geolocation;
 
-import java.io.IOException;
-import java.util.List;
-import java.util.Locale;
 import java.util.concurrent.ExecutionException;
 
 import org.json.simple.JSONObject;
@@ -10,35 +7,26 @@ import org.json.simple.JSONObject;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.location.Address;
-import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 
+import com.poly.carnetdebord.ticket.CreateTicketActivity;
 import com.poly.carnetdebord.ticket.TicketService;
-import com.poly.carnetdebord.webservice.Response;
-import com.poly.carnetdebord.webservice.WebService;
-import com.poly.carnetdebord.webservice.WebService.RequestMethod;
+import com.poly.carnetdebord.service.Response;
+import com.poly.carnetdebord.service.WebService;
+import com.poly.carnetdebord.service.WebService.RequestMethod;
 
 public class GeolocationService implements IGeolocationService,
 		LocationListener {
 
 	private final Activity activity;
 	private final LocationManager locationManager;
-	private Geocoder geocoder;
 	private ProgressDialog progressDialog;
+	private Location location;
 
-	/**
-	 * longitude in degrees
-	 */
-	public static double longitude;
-	/**
-	 * latitude in degrees
-	 */
-	public static double latitude;
 	private boolean isGPSActivated;
 
 	private static String PARAMETER_GEOLOCATION_ID = "geolocationID";
@@ -52,24 +40,26 @@ public class GeolocationService implements IGeolocationService,
 		this.activity = activity;
 		this.locationManager = (LocationManager) activity
 				.getSystemService(Context.LOCATION_SERVICE);
-		this.geocoder = new Geocoder(activity, Locale.getDefault());
 
 		start();
 
 		if (locationManager != null) {
-			Location location = locationManager
+			location = locationManager
 					.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-			if (location != null) {
-				latitude = location.getLatitude();
-				longitude = location.getLongitude();
-			}
 		}
 	}
 
 	@Override
 	public void onLocationChanged(Location location) {
-		latitude = location.getLatitude();
-		longitude = location.getLongitude();
+		this.location = location;
+		if (activity instanceof CreateTicketActivity) {
+			String urlPath = WebService.MAP_GOOGLE_URL_PATH.replace("latitude",
+					String.valueOf(location.getLatitude())).replace(
+					"longitude", String.valueOf(location.getLongitude()));
+			new WebService(activity, RequestMethod.GET).execute(urlPath);
+		}
+
+		pause();
 	}
 
 	@Override
@@ -120,65 +110,8 @@ public class GeolocationService implements IGeolocationService,
 	}
 
 	@Override
-	public Geolocation getGeolocation() {
-		if (locationManager != null) {
-			Location location = locationManager
-					.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-			if (location != null) {
-				latitude = location.getLatitude();
-				longitude = location.getLongitude();
-			}
-
-			stopProgressBar();
-		}
-		System.out.println("$$$$$$$$$$$latitude : " + latitude
-				+ ", longitude : " + longitude + "$$$$$$$$$$$");
-		Geolocation geolocation = new Geolocation(longitude, latitude);
-		List<Address> addresses = null;
-		try {
-			geocoder = new Geocoder(activity);
-			addresses = geocoder.getFromLocation(latitude, longitude, 1);
-		} catch (IOException e) {
-			System.err.println("Impossible to get address location");
-			e.printStackTrace();
-			return null;
-		}
-
-		if (addresses == null || addresses.isEmpty()) {
-			return null;
-		}
-
-		Address address = addresses.get(0);
-		geolocation.setAddress(address.getAddressLine(0).trim());
-		geolocation.setAdminArea(address.getAdminArea().trim());
-		geolocation.setCountryName(address.getCountryName().trim());
-		geolocation.setLocality(address.getLocality().trim());
-		geolocation.setPostalCode(address.getPostalCode().trim());
-
-		return geolocation;
-	}
-
-	public double getLongitude() {
-		return longitude;
-	}
-
-	public void setLongitude(double longitude) {
-		GeolocationService.longitude = longitude;
-	}
-
-	public double getLatitude() {
-		return latitude;
-	}
-
-	public void setLatitude(double latitude) {
-		GeolocationService.latitude = latitude;
-	}
-
-	@Override
 	public void stopProgressBar() {
 		if (progressDialog != null && progressDialog.isShowing()) {
-			System.out
-					.println("************** onLocationChanged fermeture progress dialog **************");
 			progressDialog.dismiss();
 		}
 	}
@@ -255,5 +188,29 @@ public class GeolocationService implements IGeolocationService,
 
 	public void setGPSActivated(boolean isGPSActivated) {
 		this.isGPSActivated = isGPSActivated;
+	}
+
+	@Override
+	public Location getLocation() {
+		return location;
+	}
+
+	public void setLocation(Location location) {
+		this.location = location;
+	}
+
+	@Override
+	public Geolocation getGeolocation() {
+		if (location == null) {
+			System.out
+					.println("*******************location null*******************");
+			return null;
+		}
+
+		Geolocation geolocation = new Geolocation();
+		geolocation.setLatitude(location.getLatitude());
+		geolocation.setLongitude(location.getLongitude());
+
+		return geolocation;
 	}
 }

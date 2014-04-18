@@ -14,7 +14,7 @@ import com.poly.carnetdebord.R;
 import com.poly.carnetdebord.geolocation.Geolocation;
 import com.poly.carnetdebord.geolocation.GeolocationService;
 import com.poly.carnetdebord.geolocation.IGeolocationService;
-import com.poly.carnetdebord.webservice.WebService;
+import com.poly.carnetdebord.service.WebService;
 
 public class ConsultTicketActivity extends Activity {
 

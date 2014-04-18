@@ -1,4 +1,4 @@
-package com.poly.carnetdebord.webservice;
+package com.poly.carnetdebord.service;
 
 public interface IWebService {
 	/**
@@ -35,4 +35,6 @@ public interface IWebService {
 	 *         status
 	 */
 	public Response sendPutRequest(String urlPath, String content);
+
+	public boolean isConnectingToInternet();
 }
