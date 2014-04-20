@@ -1,4 +1,8 @@
-package com.poly.carnetdebord;
+package com.poly.carnetdebord.geolocation;
+
+import com.poly.carnetdebord.R;
+import com.poly.carnetdebord.R.layout;
+import com.poly.carnetdebord.R.menu;
 
 import android.os.Bundle;
 import android.app.Activity;

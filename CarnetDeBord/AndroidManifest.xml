@@ -53,12 +53,12 @@
             android:label="@string/title_activity_dash_board" >
         </activity>
         <activity
-            android:name="com.poly.carnetdebord.CartographyTicketsActivity"
+            android:name="com.poly.carnetdebord.geolocation.CartographyTicketsActivity"
             android:label="@string/title_activity_cartography_tickets" >
 
         </activity>
         <activity
-            android:name="com.poly.carnetdebord.MyItinary"
+            android:name="com.poly.carnetdebord.geolocation.MyItinary"
             android:label="@string/title_activity_my_itinary" >
         </activity>
          <activity
