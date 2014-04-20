@@ -3,7 +3,7 @@ package com.poly.carnetdebord.ticket;
 import java.util.ArrayList;
 
 import com.poly.carnetdebord.geolocation.Geolocation;
-import com.poly.carnetdebord.service.Response;
+import com.poly.carnetdebord.webservice.Response;
 
 public interface ITicketService {
 	public static final String KEY_IS_LOCAL_TICKET = "isLocalTicket";

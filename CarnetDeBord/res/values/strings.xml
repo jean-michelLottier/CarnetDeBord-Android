@@ -7,6 +7,8 @@
     <string name="title_activity_create_ticket">Localisation</string>
     <string name="titre_ticket">Titre</string>
     <string name="title_activity_consult_ticket">ConsultTicketActivity</string>
+    <string name="label_carte">CARTE</string>
+    <string name="label_stats">STATISTIQUES</string>
     <string name="cb_ticket_title">Titre</string>
     <string name="cb_ticket_content">Rédiger votre message</string>
     <string name="cb_ticket_place">Lieu</string>
@@ -20,7 +22,12 @@
     <string name="cb_ticket_map_description">CARTE</string>
     <string name="cb_ticket_stats_description">STATISTIQUES</string>
     <string name="title_activity_register">RegisterActivity</string>
-    
-    
+    <string name="title_activity_dash_board">DashBoardActivity</string>
+    <string name="label_derniers_billets">Derniers billets consultés</string>
+    <string name="label_proposition_billets">Proposition de billets</string>
+    <string name="title_activity_cartography_tickets">CartographyTicketsActivity</string>
+    <string name="label_filtrer_par">Filtrer par</string>
+    <string name="title_activity_my_itinary">MyItinary</string>
 
 </resources>
+

@@ -1,4 +1,4 @@
-package com.poly.carnetdebord.service;
+package com.poly.carnetdebord.webservice;
 
 public interface IWebService {
 	/**

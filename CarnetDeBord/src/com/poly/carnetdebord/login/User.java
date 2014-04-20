@@ -9,7 +9,7 @@ public class User {
 	private String password;
 	private String name;
 	private String firstname;
-	private Date birthDate;
+	private String birthdate;
 	private boolean activate;
 
 	public long getId() {
@@ -60,12 +60,12 @@ public class User {
 		this.firstname = firstname;
 	}
 
-	public Date getBirthDate() {
-		return birthDate;
+	public String getBirthdate() {
+		return birthdate;
 	}
 
-	public void setBirthDate(Date birthDate) {
-		this.birthDate = birthDate;
+	public void setBirthdate(String birthdate) {
+		this.birthdate = birthdate;
 	}
 
 	public boolean isActivate() {

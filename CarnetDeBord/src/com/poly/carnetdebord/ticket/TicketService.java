@@ -25,10 +25,10 @@ import com.poly.carnetdebord.R;
 import com.poly.carnetdebord.dialogbox.CarnetDeBordDialogFragment;
 import com.poly.carnetdebord.geolocation.Geolocation;
 import com.poly.carnetdebord.localstorage.SessionManager;
-import com.poly.carnetdebord.service.IWebService;
-import com.poly.carnetdebord.service.Response;
-import com.poly.carnetdebord.service.WebService;
-import com.poly.carnetdebord.service.WebService.RequestMethod;
+import com.poly.carnetdebord.webservice.IWebService;
+import com.poly.carnetdebord.webservice.Response;
+import com.poly.carnetdebord.webservice.WebService;
+import com.poly.carnetdebord.webservice.WebService.RequestMethod;
 
 public class TicketService implements ITicketService {
 

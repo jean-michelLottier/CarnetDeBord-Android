@@ -15,9 +15,9 @@ import android.os.Bundle;
 
 import com.poly.carnetdebord.ticket.CreateTicketActivity;
 import com.poly.carnetdebord.ticket.TicketService;
-import com.poly.carnetdebord.service.Response;
-import com.poly.carnetdebord.service.WebService;
-import com.poly.carnetdebord.service.WebService.RequestMethod;
+import com.poly.carnetdebord.webservice.Response;
+import com.poly.carnetdebord.webservice.WebService;
+import com.poly.carnetdebord.webservice.WebService.RequestMethod;
 
 public class GeolocationService implements IGeolocationService,
 		LocationListener {

@@ -50,7 +50,7 @@ public class SessionManager {
 		editor.putString(KEY_PASSWORD, user.getPassword());
 		editor.putString(KEY_NAME, user.getName());
 		editor.putString(KEY_FIRSTNAME, user.getFirstname());
-		editor.putString(KEY_BIRTH_DATE, user.getBirthDate().toString());
+		editor.putString(KEY_BIRTH_DATE, user.getBirthdate());
 		editor.putBoolean(KEY_ACTIVATION, user.isActivate());
 		editor.commit();
 	}
@@ -92,20 +92,20 @@ public class SessionManager {
 		return sharedPreferences.getString(KEY_FIRSTNAME, null);
 	}
 
-	public Date getBirthDate() {
+	public String getBirthDate() {
 		DateFormat format = new SimpleDateFormat("yyyy/mm/dd", Locale.ENGLISH);
 		String dateString = sharedPreferences.getString(KEY_BIRTH_DATE, null);
-		Date date = new Date();
+//		Date date = new Date();
+//
+//		if (dateString != null && !dateString.isEmpty()) {
+//			try {
+//				date = format.parse(dateString);
+//			} catch (ParseException e) {
+//				System.err.println("Error occured during the date parse.");
+//			}
+//		}
 
-		if (dateString != null && !dateString.isEmpty()) {
-			try {
-				date = format.parse(dateString);
-			} catch (ParseException e) {
-				System.err.println("Error occured during the date parse.");
-			}
-		}
-
-		return date;
+		return dateString;
 	}
 
 	public boolean isActivate() {
@@ -120,7 +120,7 @@ public class SessionManager {
 		user.setPassword(getPassword());
 		user.setName(getName());
 		user.setFirstname(getFirstname());
-		user.setBirthDate(getBirthDate());
+		user.setBirthdate(getBirthDate());
 		user.setActivate(isActivate());
 
 		return user;

@@ -1,6 +1,8 @@
 package com.poly.carnetdebord.login;
 
 import java.io.IOException;
+import java.io.StringWriter;
+import java.io.Writer;
 import java.security.acl.LastOwnerException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -11,13 +13,16 @@ import java.util.Map;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.fasterxml.jackson.core.JsonGenerationException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.poly.carnetdebord.R;
 import com.poly.carnetdebord.R.id;
 import com.poly.carnetdebord.R.layout;
 import com.poly.carnetdebord.R.menu;
 import com.poly.carnetdebord.R.string;
-import com.poly.carnetdebord.service.IWebService;
-import com.poly.carnetdebord.service.WebService;
+import com.poly.carnetdebord.webservice.IWebService;
+import com.poly.carnetdebord.webservice.WebService;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -40,29 +45,17 @@ import android.widget.TextView;
  * well.
  */
 public class RegisterActivity extends Activity {
-	/**
-	 * A dummy authentication store containing known user names and passwords.
-	 * TODO: remove after connecting to a real authentication system.
-	 */
-	private static final String[] DUMMY_CREDENTIALS = new String[] {
-			"foo@example.com:hello", "bar@example.com:world" };
 
-	/**
-	 * The default email to populate the email field with.
-	 */
-	public static final String EXTRA_EMAIL = "com.example.android.authenticatordemo.extra.EMAIL";
+	/*
 	private static final String PARAMETER_LOGIN = "login";
     private static final String PARAMETER_PASSWORD = "password";
     private static final String PARAMETER_NAME = "name";
     private static final String PARAMETER_FIRSTNAME = "firstname";
     private static final String PARAMETER_BIRTHDATE = "birthdate";
     private static final String PATH_PARAMETER_TOKEN_ID = "tokenid";
+*/
 
-	/**
-	 * Keep track of the login task to ensure we can cancel it if requested.
-	 */
-	private UserLoginTask mAuthTask = null;
-
+	private static final String LOGIN_URL = "http://serveur10.lerb.polymtl.ca:8080/CarnetDeBord/webresources/login";
 	// Values for email and password at the time of the login attempt.
 	private String mEmail;
 	private String mPassword;
@@ -85,7 +78,6 @@ public class RegisterActivity extends Activity {
 	private View mLoginFormView;
 	private View mLoginStatusView;
 	private TextView mLoginStatusMessageView;
-	private IWebService webService = new WebService(this, WebService.RequestMethod.POST);
 	private Encryption crypto;
 
 	@Override
@@ -97,7 +89,6 @@ public class RegisterActivity extends Activity {
 		crypto = new Encryption(this);
 		
 		// Set up the login form.
-		mEmail = getIntent().getStringExtra(EXTRA_EMAIL);
 		mEmailView = (EditText) findViewById(R.id.register_email);
 		mEmailView.setText(mEmail);
 
@@ -107,18 +98,6 @@ public class RegisterActivity extends Activity {
 		mPasswordView = (EditText) findViewById(R.id.register_password);
 		
 		mConfirmPasswordView = (EditText) findViewById(R.id.register_confirmPassword);
-		mConfirmPasswordView
-				.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-					@Override
-					public boolean onEditorAction(TextView textView, int id,
-							KeyEvent keyEvent) {
-						if (id == R.id.register || id == EditorInfo.IME_NULL) {
-							attemptLogin();
-							return true;
-						}
-						return false;
-					}
-				});
 
 		mLoginFormView = findViewById(R.id.register_form);
 		mLoginStatusView = findViewById(R.id.register_status);
@@ -155,9 +134,6 @@ public class RegisterActivity extends Activity {
 	 * errors are presented and no actual login attempt is made.
 	 */
 	public void attemptLogin() {
-		if (mAuthTask != null) {
-			return;
-		}
 
 		// Reset errors.
 		mEmailView.setError(null);
@@ -235,137 +211,52 @@ public class RegisterActivity extends Activity {
 			// form field with an error.
 			focusView.requestFocus();
 		} else {
-			// Show a progress spinner, and kick off a background task to
-			// perform the user login attempt.
-			mLoginStatusMessageView.setText(R.string.login_progress_registering_in);
-			showProgress(true);
-			mAuthTask = new UserLoginTask();
-			mAuthTask.execute((Void) null);
-		}
-	}
-
-	/**
-	 * Shows the progress UI and hides the login form.
-	 */
-	@TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
-	private void showProgress(final boolean show) {
-		// On Honeycomb MR2 we have the ViewPropertyAnimator APIs, which allow
-		// for very easy animations. If available, use these APIs to fade-in
-		// the progress spinner.
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
-			int shortAnimTime = getResources().getInteger(
-					android.R.integer.config_shortAnimTime);
-
-			mLoginStatusView.setVisibility(View.VISIBLE);
-			mLoginStatusView.animate().setDuration(shortAnimTime)
-					.alpha(show ? 1 : 0)
-					.setListener(new AnimatorListenerAdapter() {
-						@Override
-						public void onAnimationEnd(Animator animation) {
-							mLoginStatusView.setVisibility(show ? View.VISIBLE
-									: View.GONE);
-						}
-					});
-
-			mLoginFormView.setVisibility(View.VISIBLE);
-			mLoginFormView.animate().setDuration(shortAnimTime)
-					.alpha(show ? 0 : 1)
-					.setListener(new AnimatorListenerAdapter() {
-						@Override
-						public void onAnimationEnd(Animator animation) {
-							mLoginFormView.setVisibility(show ? View.GONE
-									: View.VISIBLE);
-						}
-					});
-		} else {
-			// The ViewPropertyAnimator APIs are not available, so simply show
-			// and hide the relevant UI components.
-			mLoginStatusView.setVisibility(show ? View.VISIBLE : View.GONE);
-			mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
-		}
-	}
-
-	/**
-	 * Represents an asynchronous login/registration task used to authenticate
-	 * the user.
-	 */
-	public class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
-		@Override
-		protected Boolean doInBackground(Void... params) {
-			// TODO: attempt authentication against a network service.
 
 			try {
-				// Simulate network access.
-				Thread.sleep(1000);
-			} catch (InterruptedException e) {
-				return false;
-			}
-/*
-			for (String credential : DUMMY_CREDENTIALS) {
-				String[] pieces = credential.split(":");
-				if (pieces[0].equals(mEmail)) {
-					// Account exists, return true if the password matches.
-					return pieces[1].equals(mPassword);
-				}
-			}
-*/
-			try {
-				mEncryptedPassword = crypto.encode(mPassword);
-			} catch (IOException e1) {
+				sendData();
+			} catch (JsonGenerationException e) {
 				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
-			
-
-			user.setName(mLastname);
-			user.setFirstname(mFirstname);
-			user.setLogin(mEmail);
-			Date date = null;
-			SimpleDateFormat  format = new SimpleDateFormat("dd/mm/yy",Locale.CANADA_FRENCH);  
-			try {  
-			    date = format.parse(mBirthday);
-			} catch (ParseException e) {  
-			    // TODO Auto-generated catch block  
-			    e.printStackTrace();  
-			}
-			user.setBirthDate(date);
-			user.setPassword(mEncryptedPassword);
-			
-			JSONObject json = new JSONObject();
-			try {
-				json.put(PARAMETER_LOGIN, mEmail);
-				json.put(PARAMETER_PASSWORD, mEncryptedPassword);
-				json.put(PARAMETER_NAME, mLastname);
-				json.put(PARAMETER_FIRSTNAME, mFirstname);
-				json.put(PARAMETER_BIRTHDATE, mBirthday);
-			} catch (JSONException e) {
+				e.printStackTrace();
+			} catch (JsonMappingException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			
-			System.out.println(json.toString());
-			// TODO: register the new account here.
-			return false;
 		}
+	}
 
-		@Override
-		protected void onPostExecute(final Boolean success) {
-			mAuthTask = null;
-			showProgress(false);
+	protected void sendData() throws JsonGenerationException, JsonMappingException, IOException {
+		// TODO: attempt authentication against a network service.
 
-			if (success) {
-				finish();
-			} else {
-				mPasswordView
-						.setError(getString(R.string.error_incorrect_password));
-				mPasswordView.requestFocus();
-			}
-		}
 
-		@Override
-		protected void onCancelled() {
-			mAuthTask = null;
-			showProgress(false);
-		}
+		mEncryptedPassword = crypto.encode(mPassword);
+		
+
+		user.setName(mLastname);
+		user.setFirstname(mFirstname);
+		user.setLogin(mEmail);
+//		Date date = null;
+//		SimpleDateFormat format = new SimpleDateFormat("yy/mm/dd",Locale.CANADA_FRENCH);  
+//		try {  
+//		    date = format.parse(mBirthday);
+//		} catch (ParseException e) {  
+//		    // TODO Auto-generated catch block  
+//		    e.printStackTrace();  
+//		}
+		user.setBirthdate(mBirthday);
+		user.setPassword(mEncryptedPassword);
+		
+		
+		ObjectMapper mapper = new ObjectMapper();
+		Writer stringWriter = new StringWriter();
+		mapper.writeValue(stringWriter, user);
+		
+		WebService webService = new WebService(RegisterActivity.this, WebService.RequestMethod.POST, stringWriter.toString());
+		webService.execute(LOGIN_URL);
+		
+		System.out.println(stringWriter.toString());
+		// TODO: register the new account here.
 	}
 }

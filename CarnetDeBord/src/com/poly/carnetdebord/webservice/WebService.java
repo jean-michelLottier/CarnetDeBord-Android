@@ -1,4 +1,4 @@
-package com.poly.carnetdebord.service;
+package com.poly.carnetdebord.webservice;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -19,6 +19,12 @@ import android.os.Bundle;
 import android.widget.Toast;
 
 import com.poly.carnetdebord.dialogbox.CarnetDeBordDialogFragment;
+import com.poly.carnetdebord.login.ILoginService;
+import com.poly.carnetdebord.login.LoginActivity;
+import com.poly.carnetdebord.login.LoginService;
+import com.poly.carnetdebord.login.RegisterActivity;
+import com.poly.carnetdebord.registerservice.IRegisterService;
+import com.poly.carnetdebord.registerservice.RegisterService;
 import com.poly.carnetdebord.ticket.ConsultTicketActivity;
 import com.poly.carnetdebord.ticket.CreateTicketActivity;
 import com.poly.carnetdebord.ticket.TicketService;
@@ -95,12 +101,14 @@ public class WebService extends AsyncTask<String, Response, Response> implements
 	public Response sendPostRequest(String urlPath, String content) {
 		Response response = new Response();
 		if (content == null || content.isEmpty()) {
+			System.out.println("Json non reconnu");
 			response.setStatus(Response.BAD_REQUEST);
 			return response;
 		}
 
 		HttpURLConnection con = openConnection(urlPath);
 		if (con == null) {
+			System.out.println("Mauvais URL");
 			response.setStatus(Response.BAD_REQUEST);
 			return response;
 		}
@@ -119,6 +127,7 @@ public class WebService extends AsyncTask<String, Response, Response> implements
 			return null;
 		} catch (IOException e) {
 			response.setStatus(Response.BAD_REQUEST);
+			System.out.println("Erreur IOexception: "+con.getErrorStream());
 			return response;
 		}
 
@@ -150,17 +159,15 @@ public class WebService extends AsyncTask<String, Response, Response> implements
 			con.setRequestProperty("Accept", "application/json");
 			con.connect();
 			writeContentRequest(con, content);
-			System.out.println("Mauvaise connection");
 			response.setStatus(con.getResponseCode());
 			response.setContent(readResponse(con));
 			con.disconnect();
-			System.out.println("Mauvaise Reponse");
 		} catch (ProtocolException e) {
 			System.out.println("Erreur protocol");
 			return null;
 		} catch (IOException e) {
 			response.setStatus(Response.BAD_REQUEST);
-			System.out.println("Erreur IOexception:"+con.getErrorStream());
+			System.out.println("Erreur IOexception: "+con.getErrorStream());
 			return response;
 		}
 
@@ -191,7 +198,7 @@ public class WebService extends AsyncTask<String, Response, Response> implements
 		while ((inputLine = in.readLine()) != null) {
 			result.append(inputLine);
 		}
-		in.close();
+		//in.close();
 
 		return result.toString();
 	}
@@ -202,7 +209,7 @@ public class WebService extends AsyncTask<String, Response, Response> implements
 		osw = new OutputStreamWriter(con.getOutputStream());
 		osw.write(content);
 		osw.flush();
-		osw.close();
+		//osw.close();
 	}
 
 	@Override
@@ -245,8 +252,13 @@ public class WebService extends AsyncTask<String, Response, Response> implements
 	@Override
 	protected void onPreExecute() {
 		if (activity instanceof ConsultTicketActivity
-				|| activity instanceof CreateTicketActivity) {
+				|| activity instanceof CreateTicketActivity || activity instanceof LoginActivity ) {
 			progressDialog = ProgressDialog.show(activity, "Connexion",
+					"Veuillez patienter");
+		}
+		else if(activity instanceof RegisterActivity)
+		{
+			progressDialog = ProgressDialog.show(activity, "Enregistrement",
 					"Veuillez patienter");
 		}
 	}
@@ -268,10 +280,21 @@ public class WebService extends AsyncTask<String, Response, Response> implements
 			TicketService ticketService = new TicketService(activity);
 			ticketService.initCreateTicketActivity(response);
 		}
+		
+		if (activity instanceof LoginActivity) {
+			ILoginService loginService = LoginService.getInstance(activity);
+			loginService.initSession(response);
+		}
+		
+		if (activity instanceof RegisterActivity) {
+			IRegisterService registerService = RegisterService.getInstance(activity);
+			registerService.initSession(response);
+		}
 
 		if (progressDialog != null && progressDialog.isShowing()) {
 			progressDialog.dismiss();
 		}
+		//System.out.println(response.getContent());
 	}
 
 	@Override

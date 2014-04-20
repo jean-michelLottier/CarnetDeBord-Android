@@ -12,8 +12,8 @@ import android.view.View;
 
 import com.poly.carnetdebord.login.LoginActivity;
 import com.poly.carnetdebord.ticket.CreateTicketActivity;
-import com.poly.carnetdebord.service.WebService;
-import com.poly.carnetdebord.service.WebService.RequestMethod;
+import com.poly.carnetdebord.webservice.WebService;
+import com.poly.carnetdebord.webservice.WebService.RequestMethod;
 
 /**
  * <p>
