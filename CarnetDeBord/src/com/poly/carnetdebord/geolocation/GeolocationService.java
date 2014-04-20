@@ -13,6 +13,12 @@ import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapFragment;
+import com.google.android.gms.maps.model.LatLng;
+import com.poly.carnetdebord.R;
+import com.poly.carnetdebord.dialogbox.CarnetDeBordDialogFragment;
 import com.poly.carnetdebord.ticket.CreateTicketActivity;
 import com.poly.carnetdebord.ticket.TicketService;
 import com.poly.carnetdebord.webservice.Response;
@@ -23,7 +29,7 @@ public class GeolocationService implements IGeolocationService,
 		LocationListener {
 
 	private final Activity activity;
-	private final LocationManager locationManager;
+	private LocationManager locationManager;
 	private ProgressDialog progressDialog;
 	private Location location;
 
@@ -38,15 +44,6 @@ public class GeolocationService implements IGeolocationService,
 
 	public GeolocationService(Activity activity) {
 		this.activity = activity;
-		this.locationManager = (LocationManager) activity
-				.getSystemService(Context.LOCATION_SERVICE);
-
-		start();
-
-		if (locationManager != null) {
-			location = locationManager
-					.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-		}
 	}
 
 	@Override
@@ -57,9 +54,32 @@ public class GeolocationService implements IGeolocationService,
 					String.valueOf(location.getLatitude())).replace(
 					"longitude", String.valueOf(location.getLongitude()));
 			new WebService(activity, RequestMethod.GET).execute(urlPath);
+		} else if (activity instanceof CartographyTicketsActivity) {
+			retrieveActualRegion();
 		}
 
-		pause();
+		if (activity instanceof CreateTicketActivity) {
+			pause();
+		}
+	}
+
+	private void retrieveActualRegion() {
+		if (location == null) {
+			return;
+		}
+
+		GoogleMap googleMap = ((MapFragment) activity.getFragmentManager()
+				.findFragmentById(R.id.cb_ticket_map_carto)).getMap();
+
+		LatLng userPosition = new LatLng(location.getLatitude(),
+				location.getLongitude());
+		googleMap.setMyLocationEnabled(true);
+		googleMap.moveCamera(CameraUpdateFactory
+				.newLatLngZoom(userPosition, 13));
+		String urlPath = WebService.TICKET_URL_PATH + "/longitude/"
+				+ location.getLongitude() + "/latitude/"
+				+ location.getLatitude();
+		new WebService(activity, RequestMethod.GET).execute(urlPath);
 	}
 
 	@Override
@@ -81,24 +101,35 @@ public class GeolocationService implements IGeolocationService,
 	}
 
 	@Override
-	public boolean start() {
-		if (isGPSActivated) {
-			return true;
+	public LocationManager start() {
+		locationManager = (LocationManager) activity
+				.getSystemService(Context.LOCATION_SERVICE);
+
+		if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+			CarnetDeBordDialogFragment dialogFragment = new CarnetDeBordDialogFragment();
+			Bundle args = new Bundle();
+			args.putInt(CarnetDeBordDialogFragment.BOX_DIALOG_KEY,
+					CarnetDeBordDialogFragment.BOX_DIALOG_GPS_UNABLED);
+			dialogFragment.setArguments(args);
+			dialogFragment.show(activity.getFragmentManager(),
+					"CarnetDeBordDialogFragment");
+			return null;
 		}
+
 		if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
 			locationManager.requestLocationUpdates(
 					LocationManager.GPS_PROVIDER, 60000, 0, this);
 			isGPSActivated = true;
-			return true;
+			return locationManager;
 		} else if (locationManager
 				.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
 			locationManager.requestLocationUpdates(
 					LocationManager.NETWORK_PROVIDER, 60000, 0, this);
 			isGPSActivated = true;
-			return true;
+			return locationManager;
 		}
 
-		return false;
+		return null;
 	}
 
 	@Override
@@ -202,8 +233,6 @@ public class GeolocationService implements IGeolocationService,
 	@Override
 	public Geolocation getGeolocation() {
 		if (location == null) {
-			System.out
-					.println("*******************location null*******************");
 			return null;
 		}
 

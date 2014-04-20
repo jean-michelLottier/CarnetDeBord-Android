@@ -72,7 +72,7 @@
             <LinearLayout
                 android:id="@+id/cb_ticket_graph_stats"
                 android:layout_width="fill_parent"
-                android:layout_height="210dip"
+                android:layout_height="300dip"
                 android:orientation="vertical" />
         </LinearLayout>
     </ScrollView>

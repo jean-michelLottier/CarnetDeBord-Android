@@ -7,55 +7,37 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".CartographyTicketsActivity" >
-    
-	<LinearLayout 
-    android:id="@+id/lin_layout_carto"
-	    android:layout_width="100dp"
-	    android:layout_height="100dp"
-	    android:orientation="vertical" >
-	
-	    <!-- Pretty hint text, and maxLines -->
-	    <EditText android:id="@+id/search_box_carto" 
-	        android:layout_width="match_parent"
-	        android:layout_height="wrap_content"
-	        android:hint="@string/label_filtrer_par"
-	        android:inputType="text"
-	        android:maxLines="1"/>
-	
-	    <!-- Set height to 0, and let the weight param expand it -->
-	    <!-- Note the use of the default ID! This lets us use a 
-	         ListActivity still! -->
-	    <ListView android:id="@android:id/list"
-	        android:layout_width="match_parent"
-	        android:layout_height="0dip"
-	        android:layout_weight="1" 
-	         /> 
-	         
-	     <TextView
-	        android:id="@+id/txtView_categories_carto"
-	        android:textStyle="bold"
-	        android:layout_width="wrap_content"
-	        android:layout_height="wrap_content" />
 
-	</LinearLayout>
+    <LinearLayout
+        android:id="@+id/lin_layout_carto"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:orientation="vertical" >
 
-            <fragment
-                android:id="@+id/cb_ticket_map_carto"
-                android:name="com.testing.svma.MainActivity"
-                android:layout_width="match_parent"
-                android:layout_height="190dp"
-           android:layout_alignLeft="@+id/lin_layout_carto"
-        android:layout_below="@+id/lin_layout_carto"
-                android:layout_marginTop="10dp"
-                class="com.google.android.gms.maps.MapFragment" />
+        <TextView
+            android:id="@+id/txtView_categories_carto"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textStyle="bold" />
+    </LinearLayout>
 
-    <Button
-        android:id="@+id/btn_infos_billets_carto"
-        android:layout_width="350dp"
+    <ListView
+        android:id="@+id/cb_overview_tickets"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignLeft="@+id/cb_ticket_map_carto"
         android:layout_below="@+id/cb_ticket_map_carto"
-        android:layout_marginTop="20dp"
-        android:text="@string/label_infos_billets" />
+        android:layout_marginTop="20dp" >
+    </ListView>
+
+    <fragment
+        android:id="@+id/cb_ticket_map_carto"
+        android:name="com.testing.svma.MainActivity"
+        android:layout_width="match_parent"
+        android:layout_height="190dp"
+        android:layout_alignTop="@+id/lin_layout_carto"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="19dp"
+        class="com.google.android.gms.maps.MapFragment" />
 
 </RelativeLayout>

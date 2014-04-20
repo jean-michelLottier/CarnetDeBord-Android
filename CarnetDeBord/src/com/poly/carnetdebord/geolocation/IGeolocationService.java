@@ -1,9 +1,10 @@
 package com.poly.carnetdebord.geolocation;
 
 import android.location.Location;
+import android.location.LocationManager;
 
 public interface IGeolocationService {
-	public boolean start();
+	public LocationManager start();
 
 	public void pause();
 

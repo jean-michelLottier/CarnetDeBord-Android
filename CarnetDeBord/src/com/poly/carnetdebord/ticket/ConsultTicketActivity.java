@@ -48,8 +48,8 @@ public class ConsultTicketActivity extends Activity {
 		Bundle extras = getIntent().getExtras();
 		// long ticketID = extras.getLong(TicketService.PARAMETER_TICKET_ID);
 		// long userID = extras.getLong(TicketService.PARAMETER_USER_ID);
-		long ticketID = 3;
-		long userID = 1;
+		long ticketID = 4;
+		long userID = 25;
 
 		ticketService = new TicketService(this);
 		Geolocation geolocation = new Geolocation();

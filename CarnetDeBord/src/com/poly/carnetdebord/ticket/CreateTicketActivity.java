@@ -3,6 +3,8 @@ package com.poly.carnetdebord.ticket;
 import java.util.ArrayList;
 
 import android.app.Activity;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.View;
@@ -26,6 +28,8 @@ public class CreateTicketActivity extends Activity {
 	private ITicketService ticketService;
 	private IGeolocationService geolocationService;
 	private SessionManager session;
+
+	private LocationManager lm;
 
 	// Components
 	private TextView locationTextView;
@@ -66,6 +70,11 @@ public class CreateTicketActivity extends Activity {
 		setContentView(R.layout.activity_create_ticket);
 
 		geolocationService = new GeolocationService(this);
+		lm = geolocationService.start();
+		if (lm != null) {
+			lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 35000, 0,
+					(LocationListener) geolocationService);
+		}
 
 		typeRadioGroup = (RadioGroup) findViewById(R.id.cb_ticket_rbg);
 		typeRadioGroup.setOnCheckedChangeListener(onCheckedChangeListener);
@@ -174,4 +183,17 @@ public class CreateTicketActivity extends Activity {
 			}
 		}
 	};
+
+	@Override
+	public void onResume() {
+		super.onResume();
+		if (lm == null) {
+			lm = geolocationService.start();
+			if (lm != null) {
+				lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 35000,
+						0, (LocationListener) geolocationService);
+			}
+		}
+
+	}
 }

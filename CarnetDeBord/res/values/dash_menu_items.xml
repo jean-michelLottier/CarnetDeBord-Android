@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="menu_carnetdebord">
+        <item>CARNET DE BORD</item>
+    </string-array>
+    <string-array name="menu_profil">
+        <item>PROFIL</item>
+        <item>Mes données personnelles</item>
+        <item>Mes préferences</item>
+        <item>Déconnexion</item>
+    </string-array>
+    <string-array name="menu_billets">
+        <item>BILLETS</item>
+        <item>Nouveau billet</item>
+        <item>Mes billets</item>
+        <item>Recherche de billets</item>
+        <item>Mon parcours</item>
+    </string-array>
+    
+</resources>

@@ -1,5 +1,6 @@
 package com.poly.carnetdebord.dialogbox;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
@@ -28,6 +29,7 @@ public class CarnetDeBordDialogFragment extends DialogFragment {
 
 	// Box dialog value
 	public static final int BOX_DIALOG_DISCONNECTED = 0;
+	public static final int BOX_DIALOG_GPS_UNABLED = 1;
 
 	// Box dialog parameters
 	public static final String BOX_DIALOG_PARAMETER_URL = "urlPath";
@@ -36,8 +38,10 @@ public class CarnetDeBordDialogFragment extends DialogFragment {
 	// Box dialog contents
 	private static final String BOX_DIALOG_BUTTON_RETRY = "Réessayer";
 	private static final String BOX_DIALOG_BUTTON_QUIT_API = "Quitter l'application";
+	private static final String BOX_DIALOG_BUTTON_ACTIVATE_GPS = "Acitver le GPS";
 	private static final String BOX_DIALOG_DISCONNECTED_TITLE = "Information";
 	private static final String BOX_DIALOG_DISCONNECTED_MESSAGE = "Vous n'êtes plus connecté au réseau internet.";
+	private static final String BOX_DIALOG_GPS_UNABLED_MESSAGE = "Votre service se localisation n'est pas activé. \nVeuillez l'activer pour continuer.";
 
 	private View customView;
 
@@ -81,9 +85,33 @@ public class CarnetDeBordDialogFragment extends DialogFragment {
 			alertDialog = initDisconnectedBoxDialog(alertDialog, urlPath,
 					requestMethod);
 			break;
+		case BOX_DIALOG_GPS_UNABLED:
+			alertDialog = initGPSUnabledBoxDialog(alertDialog);
+			break;
 		default:
 			break;
 		}
+		return alertDialog;
+	}
+
+	private AlertDialog initGPSUnabledBoxDialog(AlertDialog alertDialog) {
+		alertDialog.setCanceledOnTouchOutside(false);
+		alertDialog.setTitle(BOX_DIALOG_DISCONNECTED_TITLE);
+		alertDialog.setMessage(BOX_DIALOG_GPS_UNABLED_MESSAGE);
+		alertDialog.setButton(DialogInterface.BUTTON_NEUTRAL,
+				BOX_DIALOG_BUTTON_ACTIVATE_GPS,
+				new DialogInterface.OnClickListener() {
+
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						Activity activity = ((AlertDialog) dialog)
+								.getOwnerActivity();
+						activity.startActivity(new Intent(
+								android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+						dismiss();
+					}
+				});
+
 		return alertDialog;
 	}
 
@@ -92,7 +120,7 @@ public class CarnetDeBordDialogFragment extends DialogFragment {
 		alertDialog.setCanceledOnTouchOutside(false);
 		alertDialog.setTitle(BOX_DIALOG_DISCONNECTED_TITLE);
 		alertDialog.setMessage(BOX_DIALOG_DISCONNECTED_MESSAGE);
-		alertDialog.setButton(AlertDialog.BUTTON_POSITIVE,
+		alertDialog.setButton(DialogInterface.BUTTON_POSITIVE,
 				BOX_DIALOG_BUTTON_RETRY, new DialogInterface.OnClickListener() {
 
 					@Override
@@ -105,7 +133,7 @@ public class CarnetDeBordDialogFragment extends DialogFragment {
 					}
 				});
 
-		alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE,
+		alertDialog.setButton(DialogInterface.BUTTON_NEGATIVE,
 				BOX_DIALOG_BUTTON_QUIT_API,
 				new DialogInterface.OnClickListener() {
 

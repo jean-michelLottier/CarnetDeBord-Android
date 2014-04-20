@@ -19,6 +19,8 @@ public interface ITicketService {
 	public void initConsultTicketActivity(Response response);
 
 	public void initConsultTicketActivity(Geolocation geolocation);
-	
+
 	public void initCreateTicketActivity(Response response);
+
+	public void initCartographyTicketActivity(Response response);
 }

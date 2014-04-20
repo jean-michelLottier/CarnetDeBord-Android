@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="yellow">#DFDFA5</color>
+    <color name="black">#000000</color>
+    <color name="white">#FFFFFF</color>
+    <color name="blue">#325c94</color>
+    <color name="grey">#dbdbd2</color>
+    <color name="black_shadow">#B0000000</color>
+    <color name="orange">#dd9518</color>
+    <color name="brown">#bb4b14</color>
+    <color name="transparent">#00000000</color>
+    <color name="white_shadow">#80ffffff</color>
+    <color name="blue_shadow">#60325c94</color>
+    <color name="gold">#FFD700</color>
+    <color name="divider">#90202925</color>
+    <color name="black_shadow_light">#70000000</color>
+    <color name="txt_chaines">#4f813b</color>
+    <color name="txt_nbrRestant">#ff5d04</color>
+    <color name="txt_points">#84dd24</color>
+    <color name="txt_score">#efe8c0</color>
+    <color name="chrono">#ff5d04</color>
+    <color name="txt_bonus">#ff8400</color>
+    <color name="red">#ff0000</color>
+    
+</resources>

@@ -19,12 +19,7 @@ import android.os.Bundle;
 import android.widget.Toast;
 
 import com.poly.carnetdebord.dialogbox.CarnetDeBordDialogFragment;
-import com.poly.carnetdebord.login.ILoginService;
-import com.poly.carnetdebord.login.LoginActivity;
-import com.poly.carnetdebord.login.LoginService;
-import com.poly.carnetdebord.login.RegisterActivity;
-import com.poly.carnetdebord.registerservice.IRegisterService;
-import com.poly.carnetdebord.registerservice.RegisterService;
+import com.poly.carnetdebord.geolocation.CartographyTicketsActivity;
 import com.poly.carnetdebord.ticket.ConsultTicketActivity;
 import com.poly.carnetdebord.ticket.CreateTicketActivity;
 import com.poly.carnetdebord.ticket.TicketService;
@@ -41,9 +36,10 @@ public class WebService extends AsyncTask<String, Response, Response> implements
 	private ProgressDialog progressDialog;
 	private final Activity activity;
 
-	// http://serveur10.lerb.polymtl.ca:8080/CarnetDeBord/webresources/ticket/
-	public static final String TICKET_URL_PATH = "http://10.0.2.2:8080/CarnetDeBord/webresources/ticket/";
+	// http://10.0.2.2:8080/CarnetDeBord/webresources/ticket/
+	public static final String TICKET_URL_PATH = "http://serveur10.lerb.polymtl.ca:8080/CarnetDeBord/webresources/ticket/";
 	public static final String MAP_GOOGLE_URL_PATH = "http://maps.google.com/maps/api/geocode/json?latlng=latitude,longitude&sensor=true";
+	public static final String HISTORICAL_URL_PATH = "http://serveur10.lerb.polymtl.ca:8080/CarnetDeBord/webresources/historical/";
 
 	public String getContent() {
 		return content;
@@ -101,14 +97,12 @@ public class WebService extends AsyncTask<String, Response, Response> implements
 	public Response sendPostRequest(String urlPath, String content) {
 		Response response = new Response();
 		if (content == null || content.isEmpty()) {
-			System.out.println("Json non reconnu");
 			response.setStatus(Response.BAD_REQUEST);
 			return response;
 		}
 
 		HttpURLConnection con = openConnection(urlPath);
 		if (con == null) {
-			System.out.println("Mauvais URL");
 			response.setStatus(Response.BAD_REQUEST);
 			return response;
 		}
@@ -127,7 +121,6 @@ public class WebService extends AsyncTask<String, Response, Response> implements
 			return null;
 		} catch (IOException e) {
 			response.setStatus(Response.BAD_REQUEST);
-			System.out.println("Erreur IOexception: "+con.getErrorStream());
 			return response;
 		}
 
@@ -136,18 +129,14 @@ public class WebService extends AsyncTask<String, Response, Response> implements
 
 	@Override
 	public Response sendPutRequest(String urlPath, String content) {
-
-		System.out.println("Envoi...");
 		Response response = new Response();
 		if (content == null || content.isEmpty()) {
-			System.out.println("Json non reconnu");
 			response.setStatus(Response.BAD_REQUEST);
 			return response;
 		}
 
 		HttpURLConnection con = openConnection(urlPath);
 		if (con == null) {
-			System.out.println("Mauvais URL");
 			response.setStatus(Response.BAD_REQUEST);
 			return response;
 		}
@@ -163,15 +152,12 @@ public class WebService extends AsyncTask<String, Response, Response> implements
 			response.setContent(readResponse(con));
 			con.disconnect();
 		} catch (ProtocolException e) {
-			System.out.println("Erreur protocol");
 			return null;
 		} catch (IOException e) {
 			response.setStatus(Response.BAD_REQUEST);
-			System.out.println("Erreur IOexception: "+con.getErrorStream());
 			return response;
 		}
 
-		System.out.println("Reception depuis le serveur");
 		return response;
 	}
 
@@ -198,8 +184,7 @@ public class WebService extends AsyncTask<String, Response, Response> implements
 		while ((inputLine = in.readLine()) != null) {
 			result.append(inputLine);
 		}
-		//in.close();
-
+		// in.close();
 		return result.toString();
 	}
 
@@ -209,7 +194,7 @@ public class WebService extends AsyncTask<String, Response, Response> implements
 		osw = new OutputStreamWriter(con.getOutputStream());
 		osw.write(content);
 		osw.flush();
-		//osw.close();
+		// osw.close();
 	}
 
 	@Override
@@ -252,13 +237,8 @@ public class WebService extends AsyncTask<String, Response, Response> implements
 	@Override
 	protected void onPreExecute() {
 		if (activity instanceof ConsultTicketActivity
-				|| activity instanceof CreateTicketActivity || activity instanceof LoginActivity ) {
+				|| activity instanceof CreateTicketActivity) {
 			progressDialog = ProgressDialog.show(activity, "Connexion",
-					"Veuillez patienter");
-		}
-		else if(activity instanceof RegisterActivity)
-		{
-			progressDialog = ProgressDialog.show(activity, "Enregistrement",
 					"Veuillez patienter");
 		}
 	}
@@ -280,21 +260,15 @@ public class WebService extends AsyncTask<String, Response, Response> implements
 			TicketService ticketService = new TicketService(activity);
 			ticketService.initCreateTicketActivity(response);
 		}
-		
-		if (activity instanceof LoginActivity) {
-			ILoginService loginService = LoginService.getInstance(activity);
-			loginService.initSession(response);
-		}
-		
-		if (activity instanceof RegisterActivity) {
-			IRegisterService registerService = RegisterService.getInstance(activity);
-			registerService.initSession(response);
+
+		if (activity instanceof CartographyTicketsActivity) {
+			TicketService ticketService = new TicketService(activity);
+			ticketService.initCartographyTicketActivity(response);
 		}
 
 		if (progressDialog != null && progressDialog.isShowing()) {
 			progressDialog.dismiss();
 		}
-		//System.out.println(response.getContent());
 	}
 
 	@Override
