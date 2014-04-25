@@ -28,6 +28,8 @@
     <string name="title_activity_cartography_tickets">CartographyTicketsActivity</string>
     <string name="label_filtrer_par">Filtrer par</string>
     <string name="title_activity_my_itinary">MyItinary</string>
+    <string name="drawer_open">Afficher le menu</string>
+    <string name="drawer_close">Fermer le menu</string>
 
 </resources>
 

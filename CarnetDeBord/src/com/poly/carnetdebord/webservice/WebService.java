@@ -20,6 +20,10 @@ import android.widget.Toast;
 
 import com.poly.carnetdebord.dialogbox.CarnetDeBordDialogFragment;
 import com.poly.carnetdebord.geolocation.CartographyTicketsActivity;
+import com.poly.carnetdebord.login.ILoginService;
+import com.poly.carnetdebord.login.LoginActivity;
+import com.poly.carnetdebord.login.LoginService;
+import com.poly.carnetdebord.login.RegisterActivity;
 import com.poly.carnetdebord.ticket.ConsultTicketActivity;
 import com.poly.carnetdebord.ticket.CreateTicketActivity;
 import com.poly.carnetdebord.ticket.TicketService;
@@ -237,11 +241,17 @@ public class WebService extends AsyncTask<String, Response, Response> implements
 	@Override
 	protected void onPreExecute() {
 		if (activity instanceof ConsultTicketActivity
-				|| activity instanceof CreateTicketActivity) {
+				|| activity instanceof CreateTicketActivity || activity instanceof LoginActivity) {
 			progressDialog = ProgressDialog.show(activity, "Connexion",
 					"Veuillez patienter");
 		}
+
+		if (activity instanceof RegisterActivity) {
+			progressDialog = ProgressDialog.show(activity, "Enregistrement",
+					"Veuillez patienter");
+		}
 	}
+	
 
 	@Override
 	protected void onPostExecute(Response response) {
@@ -266,6 +276,16 @@ public class WebService extends AsyncTask<String, Response, Response> implements
 			ticketService.initCartographyTicketActivity(response);
 		}
 
+		if (activity instanceof LoginActivity) {
+			ILoginService loginService = LoginService.getInstance(activity);
+			loginService.initSession(response);
+		}
+
+		if (activity instanceof RegisterActivity) {
+			ILoginService loginService = LoginService.getInstance(activity);
+			loginService.finishRegister(response);
+		}
+		
 		if (progressDialog != null && progressDialog.isShowing()) {
 			progressDialog.dismiss();
 		}

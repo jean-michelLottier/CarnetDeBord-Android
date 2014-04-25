@@ -16,7 +16,9 @@ import android.os.Bundle;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.poly.carnetdebord.R;
 import com.poly.carnetdebord.dialogbox.CarnetDeBordDialogFragment;
 import com.poly.carnetdebord.ticket.CreateTicketActivity;
@@ -76,6 +78,11 @@ public class GeolocationService implements IGeolocationService,
 		googleMap.setMyLocationEnabled(true);
 		googleMap.moveCamera(CameraUpdateFactory
 				.newLatLngZoom(userPosition, 13));
+		googleMap.addMarker(new MarkerOptions().icon(
+				BitmapDescriptorFactory
+						.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
+				.position(userPosition));
+
 		String urlPath = WebService.TICKET_URL_PATH + "/longitude/"
 				+ location.getLongitude() + "/latitude/"
 				+ location.getLatitude();

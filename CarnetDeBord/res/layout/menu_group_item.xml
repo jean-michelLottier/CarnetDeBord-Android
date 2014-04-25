@@ -1,21 +1,19 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="100dp"
-    android:background="@drawable/selector_menu"
-    android:orientation="vertical" >
+    android:layout_height="150dp"
+    android:clickable="true"
+    android:orientation="vertical"
+    android:paddingTop="40dp" >
 
     <TextView
-        android:id="@+id/menu_itemView"
+        android:id="@+id/menu_groupView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-    	android:paddingTop="10dp"
-    	android:paddingBottom="10dp"
-    	android:paddingLeft="5dp"
-    	android:paddingRight="5dp"
+        android:drawablePadding="5dp"
         android:gravity="center_vertical"
         android:text="@string/hello_world"
-        android:textSize="30sp"
+        android:textSize="45sp"
         android:textColor="@color/white"
         android:textStyle="bold" >
     </TextView>
@@ -23,6 +21,10 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@android:color/black" />
+        android:background="@android:color/white" />
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@android:color/white" />
 
 </LinearLayout> 

@@ -350,10 +350,7 @@ public class TicketService implements ITicketService {
 
 	@Override
 	public void initCartographyTicketActivity(Response response) {
-		System.out
-				.println("*******************initCartography*******************");
 		if (response == null || response.getStatus() == Response.NO_CONTENT) {
-			System.out.println("****************TEST1****************");
 			return;
 		}
 
@@ -376,6 +373,18 @@ public class TicketService implements ITicketService {
 				geolocation.setAddress(json.get("address").toString());
 
 				geolocations.add(geolocation);
+
+				GoogleMap googleMap = ((MapFragment) activity
+						.getFragmentManager().findFragmentById(
+								R.id.cb_ticket_map_carto)).getMap();
+				LatLng ticketPosition = new LatLng(geolocation.getLatitude(),
+						geolocation.getLongitude());
+				googleMap.setMyLocationEnabled(true);
+				googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
+						ticketPosition, 13));
+				googleMap.addMarker(new MarkerOptions().title(
+						geolocation.getTicket().getTitle()).position(
+						ticketPosition));
 			}
 		} catch (org.json.simple.parser.ParseException e) {
 			// TODO Auto-generated catch block

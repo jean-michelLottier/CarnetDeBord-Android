@@ -27,6 +27,7 @@ public class SessionManager {
 	private static final String KEY_FIRSTNAME = "firstname";
 	private static final String KEY_BIRTH_DATE = "birthDate";
 	private static final String KEY_ACTIVATION = "activation";
+	private static final String KEY_BATTERY_LEVEL = "batteryLevel";
 
 	public Context getContext() {
 		return context;
@@ -95,21 +96,30 @@ public class SessionManager {
 	public String getBirthDate() {
 		DateFormat format = new SimpleDateFormat("yyyy/mm/dd", Locale.ENGLISH);
 		String dateString = sharedPreferences.getString(KEY_BIRTH_DATE, null);
-//		Date date = new Date();
-//
-//		if (dateString != null && !dateString.isEmpty()) {
-//			try {
-//				date = format.parse(dateString);
-//			} catch (ParseException e) {
-//				System.err.println("Error occured during the date parse.");
-//			}
-//		}
+		// Date date = new Date();
+		//
+		// if (dateString != null && !dateString.isEmpty()) {
+		// try {
+		// date = format.parse(dateString);
+		// } catch (ParseException e) {
+		// System.err.println("Error occured during the date parse.");
+		// }
+		// }
 
 		return dateString;
 	}
 
 	public boolean isActivate() {
 		return sharedPreferences.getBoolean(KEY_ACTIVATION, false);
+	}
+
+	public int getBatteryLevel() {
+		return sharedPreferences.getInt(KEY_BATTERY_LEVEL, -1);
+	}
+
+	public void setBatteryLevel(int batteryLevel) {
+		editor.putInt(KEY_BATTERY_LEVEL, batteryLevel);
+		editor.commit();
 	}
 
 	public User getUserDetails() {

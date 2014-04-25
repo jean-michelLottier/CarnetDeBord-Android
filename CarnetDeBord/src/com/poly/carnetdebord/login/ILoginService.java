@@ -6,4 +6,6 @@ import com.poly.carnetdebord.webservice.Response;
 public interface ILoginService {
 	public void initSession(Response response);
 
+	public void finishRegister(Response response);
+
 }

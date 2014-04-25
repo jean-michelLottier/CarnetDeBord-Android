@@ -195,7 +195,7 @@ public class LoginActivity extends Activity {
 		WebService webService = new WebService(LoginActivity.this, WebService.RequestMethod.PUT, stringWriter.toString());
 		webService.execute(LOGIN_URL);
 		
-		System.out.println(stringWriter.toString());
+		//System.out.println(stringWriter.toString());
 		//System.out.println(json.toString());
 	}
 }
