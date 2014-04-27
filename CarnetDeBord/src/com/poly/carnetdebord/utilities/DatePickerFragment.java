@@ -1,4 +1,4 @@
-package com.poly.carnetdebord.login;
+package com.poly.carnetdebord.utilities;
 
 import java.util.Calendar;
 
@@ -13,6 +13,11 @@ import android.view.View;
 import android.widget.DatePicker;
 import android.widget.TextView;
 
+/*
+ * 
+ * A class used to display an user-friendly datePicker
+ * 
+ */
 public class DatePickerFragment extends DialogFragment implements
 		DatePickerDialog.OnDateSetListener {
 

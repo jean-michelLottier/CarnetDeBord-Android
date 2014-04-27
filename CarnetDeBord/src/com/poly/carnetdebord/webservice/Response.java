@@ -14,6 +14,9 @@ public class Response {
 	public static final int UNAUTHORIZED = 401;
 	public static final int INTERNAL_SERVER_ERROR = 500;
 	public static final int NO_CONTENT = 204;
+	public static final int CONFLICT = 409;
+	public static final int OK = 200;
+	public static final int UNSUPPORTED_MEDIA_TYPE = 415;
 
 	private int status;
 	private String content;

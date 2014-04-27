@@ -15,6 +15,11 @@ import com.fasterxml.jackson.core.JsonGenerationException;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.poly.carnetdebord.R;
+import com.poly.carnetdebord.dialogbox.CarnetDeBordDialogFragment;
+import com.poly.carnetdebord.utilities.AppMode;
+import com.poly.carnetdebord.utilities.Encryption;
+import com.poly.carnetdebord.utilities.User;
+import com.poly.carnetdebord.utilities.AppMode.FinishCode;
 import com.poly.carnetdebord.webservice.WebService;
 
 import android.app.Activity;
@@ -28,36 +33,28 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.TextView;
 
-
 /**
  * Activity which displays a login screen to the user, offering registration as
  * well.
  */
 public class LoginActivity extends Activity {
 
-
 	private static final String FICHIER_PROPERTIES = "utils.properties";
 	private static final String LOGIN_URL = "http://serveur10.lerb.polymtl.ca:8080/CarnetDeBord/webresources/login";
-	public static final Logger logger = Logger.getLogger(LoginActivity.class.getName());
+	public static final Logger logger = Logger.getLogger(LoginActivity.class
+			.getName());
 
-
-	
 	// Values for email and password at the time of the login attempt.
 	private String mEmail;
 	private String mPassword;
 	private String mEncryptedPassword;
-	
+
 	private User user = new User();
 
 	// UI references.
 	private EditText mEmailView;
 	private EditText mPasswordView;
-	private View mLoginFormView;
-	private View mLoginStatusView;
-	private TextView mLoginStatusMessageView;
-	private InputStream fichierProperties;
-	private ILoginService localService = LoginService.getInstance(this);
-	
+
 	private Encryption crypto;
 
 	@Override
@@ -65,8 +62,9 @@ public class LoginActivity extends Activity {
 		super.onCreate(savedInstanceState);
 
 		setContentView(R.layout.activity_login);
+		AppMode.getInstance().setMode(AppMode.LOGIN);
 
-		 crypto = new Encryption(this);
+		crypto = new Encryption(this);
 		// Set up the login form.
 		mEmailView = (EditText) findViewById(R.id.email);
 		mEmailView.setText(mEmail);
@@ -85,12 +83,6 @@ public class LoginActivity extends Activity {
 					}
 				});
 
-		
-		
-		mLoginFormView = findViewById(R.id.login_form);
-		mLoginStatusView = findViewById(R.id.login_status);
-		mLoginStatusMessageView = (TextView) findViewById(R.id.login_status_message);
-
 		findViewById(R.id.sign_in_button).setOnClickListener(
 				new View.OnClickListener() {
 					@Override
@@ -98,16 +90,17 @@ public class LoginActivity extends Activity {
 						attemptLogin();
 					}
 				});
-		
+
 		findViewById(R.id.register).setOnClickListener(
 				new View.OnClickListener() {
 
 					@Override
 					public void onClick(View v) {
 						// TODO Auto-generated method stub
-						startActivity(new Intent(getApplicationContext(),RegisterActivity.class));
+						startActivity(new Intent(getApplicationContext(),
+								RegisterActivity.class));
 					}
-					
+
 				});
 	}
 
@@ -157,15 +150,13 @@ public class LoginActivity extends Activity {
 			focusView = mEmailView;
 			cancel = true;
 		}
-		
-		
 
 		if (cancel) {
 			// There was an error; don't attempt login and focus the first
 			// form field with an error.
 			focusView.requestFocus();
 		} else {
-			
+
 			try {
 				sendData();
 			} catch (JSONException e) {
@@ -180,22 +171,47 @@ public class LoginActivity extends Activity {
 			}
 		}
 	}
-	
-	public void sendData() throws JSONException, JsonGenerationException, IOException {
+
+	public void resetForm() {
+		mPasswordView.setText("");
+		mEmailView.setText("");
+		mEmailView.requestFocus();
+	}
+
+	public void sendData() throws JSONException, JsonGenerationException,
+			IOException {
 		// TODO: attempt authentication against a network service.
-	
+
 		mEncryptedPassword = crypto.encode(mPassword);
 		user.setLogin("random@wawa.com");
 		user.setPassword("testtest");
-		
+
 		ObjectMapper mapper = new ObjectMapper();
 		Writer stringWriter = new StringWriter();
 		mapper.writeValue(stringWriter, user);
-		
-		WebService webService = new WebService(LoginActivity.this, WebService.RequestMethod.PUT, stringWriter.toString());
+
+		WebService webService = new WebService(LoginActivity.this,
+				WebService.RequestMethod.PUT, stringWriter.toString());
 		webService.execute(LOGIN_URL);
-		
-		//System.out.println(stringWriter.toString());
-		//System.out.println(json.toString());
+
+		// System.out.println(stringWriter.toString());
+		// System.out.println(json.toString());
+	}
+
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+		if (requestCode == FinishCode.REQUEST_EXIT) {
+			if (resultCode == FinishCode.RESULT_QUIT) {
+				this.finish();
+			}
+		}
+	}
+
+	@Override
+	public void onBackPressed() {
+		CarnetDeBordDialogFragment dialogFragment = new CarnetDeBordDialogFragment();
+		dialogFragment.showQuitAPIBoxDialog(this);
+		return;
 	}
 }

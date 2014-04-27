@@ -14,6 +14,8 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
 import android.app.Activity;
+import android.app.Fragment;
+import android.content.Context;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -84,8 +86,7 @@ public class TicketService implements ITicketService {
 				.replace("ticketid", "1");
 		System.out.println("urlpath : " + urlPath);
 		// webService = new WebService();
-		AsyncTask<String, Response, Response> response = new WebService(
-				activity, RequestMethod.GET).execute(urlPath);
+		AsyncTask<String, Response, Response> response = new WebService(activity,RequestMethod.GET).execute(urlPath);
 		try {
 			System.out.println("status : " + response.get().getStatus()
 					+ ", content : " + response.get().getContent());
@@ -315,17 +316,7 @@ public class TicketService implements ITicketService {
 	public void initCreateTicketActivity(Response response) {
 		if (response == null || response.getStatus() == Response.BAD_REQUEST) {
 			CarnetDeBordDialogFragment dialogFragment = new CarnetDeBordDialogFragment();
-			Bundle args = new Bundle();
-			args.putInt(CarnetDeBordDialogFragment.BOX_DIALOG_KEY,
-					CarnetDeBordDialogFragment.BOX_DIALOG_DISCONNECTED);
-			args.putString(CarnetDeBordDialogFragment.BOX_DIALOG_PARAMETER_URL,
-					response.getUrl());
-			args.putString(
-					CarnetDeBordDialogFragment.BOX_DIALOG_PARAMETER_REQUESTMETHOD,
-					RequestMethod.GET.toString());
-			dialogFragment.setArguments(args);
-			dialogFragment.show(activity.getFragmentManager(),
-					"CarnetDeBordDialogFragment");
+			dialogFragment.showDisconnectedBoxDialog(activity,response.getUrl(), RequestMethod.GET);
 			return;
 		}
 		String address = null;

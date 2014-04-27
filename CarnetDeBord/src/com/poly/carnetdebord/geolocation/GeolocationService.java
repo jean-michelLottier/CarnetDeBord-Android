@@ -20,9 +20,10 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.poly.carnetdebord.R;
+import com.poly.carnetdebord.dashboard.Fragment_CreateTicket;
 import com.poly.carnetdebord.dialogbox.CarnetDeBordDialogFragment;
-import com.poly.carnetdebord.ticket.CreateTicketActivity;
 import com.poly.carnetdebord.ticket.TicketService;
+import com.poly.carnetdebord.utilities.AppMode;
 import com.poly.carnetdebord.webservice.Response;
 import com.poly.carnetdebord.webservice.WebService;
 import com.poly.carnetdebord.webservice.WebService.RequestMethod;
@@ -43,24 +44,26 @@ public class GeolocationService implements IGeolocationService,
 	private static String PARAMETER_ADDRESS = "address";
 
 	private IGeolocationDAO geolocationDAO;
+	private int mode;
 
 	public GeolocationService(Activity activity) {
 		this.activity = activity;
+		this.mode = AppMode.getInstance().getMode();
 	}
 
 	@Override
 	public void onLocationChanged(Location location) {
 		this.location = location;
-		if (activity instanceof CreateTicketActivity) {
+		if (mode==AppMode.CREATE_TICKET) {
 			String urlPath = WebService.MAP_GOOGLE_URL_PATH.replace("latitude",
 					String.valueOf(location.getLatitude())).replace(
 					"longitude", String.valueOf(location.getLongitude()));
 			new WebService(activity, RequestMethod.GET).execute(urlPath);
-		} else if (activity instanceof CartographyTicketsActivity) {
+		} else if (mode == AppMode.FIND_TICKETS) {
 			retrieveActualRegion();
 		}
 
-		if (activity instanceof CreateTicketActivity) {
+		if (mode == AppMode.CREATE_TICKET) {
 			pause();
 		}
 	}
@@ -114,12 +117,7 @@ public class GeolocationService implements IGeolocationService,
 
 		if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
 			CarnetDeBordDialogFragment dialogFragment = new CarnetDeBordDialogFragment();
-			Bundle args = new Bundle();
-			args.putInt(CarnetDeBordDialogFragment.BOX_DIALOG_KEY,
-					CarnetDeBordDialogFragment.BOX_DIALOG_GPS_UNABLED);
-			dialogFragment.setArguments(args);
-			dialogFragment.show(activity.getFragmentManager(),
-					"CarnetDeBordDialogFragment");
+			dialogFragment.showGPSUnabledBoxDialog(activity);
 			return null;
 		}
 

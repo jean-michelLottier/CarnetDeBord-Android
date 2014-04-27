@@ -10,7 +10,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 
-import com.poly.carnetdebord.login.User;
+import com.poly.carnetdebord.utilities.User;
 
 public class SessionManager {
 	SharedPreferences sharedPreferences;
@@ -51,7 +51,7 @@ public class SessionManager {
 		editor.putString(KEY_PASSWORD, user.getPassword());
 		editor.putString(KEY_NAME, user.getName());
 		editor.putString(KEY_FIRSTNAME, user.getFirstname());
-		editor.putString(KEY_BIRTH_DATE, user.getBirthdate());
+		editor.putString(KEY_BIRTH_DATE, user.getBirthdate().toString());
 		editor.putBoolean(KEY_ACTIVATION, user.isActivate());
 		editor.commit();
 	}
@@ -93,20 +93,20 @@ public class SessionManager {
 		return sharedPreferences.getString(KEY_FIRSTNAME, null);
 	}
 
-	public String getBirthDate() {
+	public Date getBirthDate() {
 		DateFormat format = new SimpleDateFormat("yyyy/mm/dd", Locale.ENGLISH);
 		String dateString = sharedPreferences.getString(KEY_BIRTH_DATE, null);
-		// Date date = new Date();
-		//
-		// if (dateString != null && !dateString.isEmpty()) {
-		// try {
-		// date = format.parse(dateString);
-		// } catch (ParseException e) {
-		// System.err.println("Error occured during the date parse.");
-		// }
-		// }
+		 Date date = new Date();
+		
+		 if (dateString != null && !dateString.isEmpty()) {
+		 try {
+		 date = format.parse(dateString);
+		 } catch (ParseException e) {
+		 System.err.println("Error occured during the date parse.");
+		 }
+		 }
 
-		return dateString;
+		return date;
 	}
 
 	public boolean isActivate() {

@@ -1,9 +1,15 @@
-package com.poly.carnetdebord.ticket;
+package com.poly.carnetdebord.dashboard;
 
 import android.app.Activity;
+import android.support.v4.app.Fragment;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.View.OnClickListener;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -14,9 +20,17 @@ import com.poly.carnetdebord.R;
 import com.poly.carnetdebord.geolocation.Geolocation;
 import com.poly.carnetdebord.geolocation.GeolocationService;
 import com.poly.carnetdebord.geolocation.IGeolocationService;
+import com.poly.carnetdebord.ticket.ITicketService;
+import com.poly.carnetdebord.ticket.Ticket;
+import com.poly.carnetdebord.ticket.TicketService;
 import com.poly.carnetdebord.webservice.WebService;
 
-public class ConsultTicketActivity extends Activity {
+/*
+ * 
+ * Fragment used to consult a ticket
+ * 
+ */
+public class Fragment_ConsultTicket extends Fragment {
 
 	private TextView locationTextView;
 	private TextView titleTextView;
@@ -31,7 +45,7 @@ public class ConsultTicketActivity extends Activity {
 
 	public ITicketService getTicketService() {
 		if (ticketService == null) {
-			ticketService = new TicketService(this);
+			ticketService = new TicketService(getActivity());
 		}
 		return ticketService;
 	}
@@ -41,46 +55,41 @@ public class ConsultTicketActivity extends Activity {
 	}
 
 	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_consult_ticket);
-
-		Bundle extras = getIntent().getExtras();
-		// long ticketID = extras.getLong(TicketService.PARAMETER_TICKET_ID);
-		// long userID = extras.getLong(TicketService.PARAMETER_USER_ID);
+	public View onCreateView(LayoutInflater inflater, ViewGroup container,
+			Bundle savedInstanceState) {
+		View rootView = inflater.inflate(R.layout.fragment_consult_ticket,
+				container, false);
 		long ticketID = 4;
 		long userID = 25;
 
-		ticketService = new TicketService(this);
+		ticketService = new TicketService(getActivity());
 		Geolocation geolocation = new Geolocation();
 		// if (extras.getBoolean(ITicketService.KEY_IS_LOCAL_TICKET)) {
 		if (false) {
 			Ticket ticket = ticketService.findLocalTicketByID(ticketID);
-			geolocationService = new GeolocationService(this);
+			geolocationService = new GeolocationService(getActivity());
 			geolocation = geolocationService
 					.findLocalGeolocationByTicketID(ticket.getId());
 			geolocation.setTicket(ticket);
 		} else {
 			String urlPath = WebService.TICKET_URL_PATH + userID + "/id/"
 					+ ticketID;
-			new WebService(this, WebService.RequestMethod.GET).execute(urlPath);
+			new WebService(getActivity(), WebService.RequestMethod.GET)
+					.execute(urlPath);
 		}
 
 		getFragmentManager().findFragmentById(R.id.cb_ticket_map).getView()
 				.setVisibility(View.GONE);
-		findViewById(R.id.cb_ticket_graph_stats).setVisibility(View.GONE);
+		getActivity().findViewById(R.id.cb_ticket_graph_stats).setVisibility(
+				View.GONE);
 
-		mapButton = (ImageButton) findViewById(R.id.cb_ticket_butt_map);
+		mapButton = (ImageButton) getActivity().findViewById(
+				R.id.cb_ticket_butt_map);
 		mapButton.setOnClickListener(onClickListener);
-		statsButton = (ImageButton) findViewById(R.id.cb_ticket_butt_stats);
+		statsButton = (ImageButton) getActivity().findViewById(
+				R.id.cb_ticket_butt_stats);
 		statsButton.setOnClickListener(onClickListener);
-	}
-
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.consult_ticket, menu);
-		return true;
+		return rootView;
 	}
 
 	OnClickListener onClickListener = new OnClickListener() {
@@ -98,7 +107,7 @@ public class ConsultTicketActivity extends Activity {
 				}
 				break;
 			case R.id.cb_ticket_butt_stats:
-				v = findViewById(R.id.cb_ticket_graph_stats);
+				v = getActivity().findViewById(R.id.cb_ticket_graph_stats);
 				if (v.getVisibility() == View.VISIBLE) {
 					v.setVisibility(View.GONE);
 				} else {

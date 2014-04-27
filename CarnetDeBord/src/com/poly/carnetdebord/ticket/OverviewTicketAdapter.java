@@ -12,6 +12,7 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import com.poly.carnetdebord.R;
+import com.poly.carnetdebord.dashboard.Fragment_ConsultTicket;
 import com.poly.carnetdebord.geolocation.Geolocation;
 import com.poly.carnetdebord.localstorage.SessionManager;
 
@@ -62,7 +63,7 @@ public class OverviewTicketAdapter extends ArrayAdapter<Geolocation> {
 				SessionManager session = new SessionManager(context);
 
 				Intent intent = new Intent(v.getContext(),
-						ConsultTicketActivity.class);
+						Fragment_ConsultTicket.class);
 				intent.putExtra(TicketService.PARAMETER_TICKET_ID, geolocation
 						.getTicket().getId());
 				// intent.putExtra(TicketService.PARAMETER_USER_ID,

@@ -1,4 +1,4 @@
-package com.poly.carnetdebord.ticket;
+package com.poly.carnetdebord.dashboard;
 
 import java.util.ArrayList;
 
@@ -13,17 +13,22 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
+/*
+ * 
+ * An adapter to display the items within the dashbord-menu
+ * 
+ */
 public class MenuListAdapter extends BaseAdapter {
 
 	private ArrayList<ItemMenu> list;
-	  public LayoutInflater inflater;
-	  public Activity activity;
+	public LayoutInflater inflater;
+	public Activity activity;
 
-	  public MenuListAdapter(Activity act, ArrayList<ItemMenu> groups) {
-	    activity = act;
-	    this.list = groups;
-	    inflater = act.getLayoutInflater();
-	  }
+	public MenuListAdapter(Activity act, ArrayList<ItemMenu> groups) {
+		activity = act;
+		this.list = groups;
+		inflater = act.getLayoutInflater();
+	}
 
 	@Override
 	public int getCount() {
@@ -49,33 +54,32 @@ public class MenuListAdapter extends BaseAdapter {
 		final ItemMenu item = (ItemMenu) getItem(position);
 
 		TextView itemName = null;
-		if (convertView == null)
-		{
-			
-			switch(item.getState())
-			{
-				case ItemMenu.TITLE:
-					convertView = inflater.inflate(R.layout.menu_group_item, null);
-					break;
-				case ItemMenu.PROFILE:
-					convertView = inflater.inflate(R.layout.menu_profile_item, null);
-					break;
-				default:
-					convertView = inflater.inflate(R.layout.menu_item, null);
-					break;
-			}
-		}
-		switch(item.getState())
-		{
+		if (convertView == null) {
+
+			switch (item.getState()) {
 			case ItemMenu.TITLE:
-				itemName = (TextView) convertView.findViewById(R.id.menu_groupView);
+				convertView = inflater.inflate(R.layout.menu_group_item, null);
 				break;
 			case ItemMenu.PROFILE:
-				itemName = (TextView) convertView.findViewById(R.id.menu_profileItemView);
+				convertView = inflater
+						.inflate(R.layout.menu_profile_item, null);
 				break;
 			default:
-				itemName = (TextView) convertView.findViewById(R.id.menu_itemView);
+				convertView = inflater.inflate(R.layout.menu_item, null);
 				break;
+			}
+		}
+		switch (item.getState()) {
+		case ItemMenu.TITLE:
+			itemName = (TextView) convertView.findViewById(R.id.menu_groupView);
+			break;
+		case ItemMenu.PROFILE:
+			itemName = (TextView) convertView
+					.findViewById(R.id.menu_profileItemView);
+			break;
+		default:
+			itemName = (TextView) convertView.findViewById(R.id.menu_itemView);
+			break;
 		}
 		itemName.setText(item.getName());
 		return convertView;

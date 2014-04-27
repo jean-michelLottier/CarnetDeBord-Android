@@ -18,15 +18,16 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.widget.Toast;
 
+import com.poly.carnetdebord.dashboard.Fragment_FindTickets;
+import com.poly.carnetdebord.dashboard.Fragment_ConsultTicket;
+import com.poly.carnetdebord.dashboard.Fragment_CreateTicket;
 import com.poly.carnetdebord.dialogbox.CarnetDeBordDialogFragment;
-import com.poly.carnetdebord.geolocation.CartographyTicketsActivity;
 import com.poly.carnetdebord.login.ILoginService;
 import com.poly.carnetdebord.login.LoginActivity;
 import com.poly.carnetdebord.login.LoginService;
 import com.poly.carnetdebord.login.RegisterActivity;
-import com.poly.carnetdebord.ticket.ConsultTicketActivity;
-import com.poly.carnetdebord.ticket.CreateTicketActivity;
 import com.poly.carnetdebord.ticket.TicketService;
+import com.poly.carnetdebord.utilities.AppMode;
 
 public class WebService extends AsyncTask<String, Response, Response> implements
 		IWebService {
@@ -38,7 +39,8 @@ public class WebService extends AsyncTask<String, Response, Response> implements
 	private String content;
 	private RequestMethod requestMethod;
 	private ProgressDialog progressDialog;
-	private final Activity activity;
+	private Activity activity;
+	private int mode;
 
 	// http://10.0.2.2:8080/CarnetDeBord/webresources/ticket/
 	public static final String TICKET_URL_PATH = "http://serveur10.lerb.polymtl.ca:8080/CarnetDeBord/webresources/ticket/";
@@ -64,13 +66,15 @@ public class WebService extends AsyncTask<String, Response, Response> implements
 	public WebService(Activity activity, RequestMethod requestMethod) {
 		this.requestMethod = requestMethod;
 		this.content = null;
+		this.mode = AppMode.getInstance().getMode();
 		this.activity = activity;
 	}
 
-	public WebService(Activity activity, RequestMethod requestMethod,
+	public WebService(Activity activity,RequestMethod requestMethod,
 			String content) {
 		this.requestMethod = requestMethod;
 		this.content = content;
+		this.mode = AppMode.getInstance().getMode();
 		this.activity = activity;
 	}
 
@@ -205,17 +209,7 @@ public class WebService extends AsyncTask<String, Response, Response> implements
 	protected Response doInBackground(String... urlPaths) {
 		while (!isConnectingToInternet()) {
 			CarnetDeBordDialogFragment dialogFragment = new CarnetDeBordDialogFragment();
-			Bundle args = new Bundle();
-			args.putInt(CarnetDeBordDialogFragment.BOX_DIALOG_KEY,
-					CarnetDeBordDialogFragment.BOX_DIALOG_DISCONNECTED);
-			args.putString(CarnetDeBordDialogFragment.BOX_DIALOG_PARAMETER_URL,
-					urlPaths[0]);
-			args.putString(
-					CarnetDeBordDialogFragment.BOX_DIALOG_PARAMETER_REQUESTMETHOD,
-					requestMethod.toString());
-			dialogFragment.setArguments(args);
-			dialogFragment.show(activity.getFragmentManager(),
-					"CarnetDeBordDialogFragment");
+			dialogFragment.showDisconnectedBoxDialog(activity, urlPaths[0], requestMethod);
 			return null;
 		}
 
@@ -240,13 +234,13 @@ public class WebService extends AsyncTask<String, Response, Response> implements
 
 	@Override
 	protected void onPreExecute() {
-		if (activity instanceof ConsultTicketActivity
-				|| activity instanceof CreateTicketActivity || activity instanceof LoginActivity) {
+		if (mode == AppMode.CONSULT_TICKET || mode == AppMode.CREATE_TICKET
+				|| mode == AppMode.LOGIN) {
 			progressDialog = ProgressDialog.show(activity, "Connexion",
 					"Veuillez patienter");
 		}
 
-		if (activity instanceof RegisterActivity) {
+		if (mode == AppMode.REGISTER) {
 			progressDialog = ProgressDialog.show(activity, "Enregistrement",
 					"Veuillez patienter");
 		}
@@ -261,27 +255,27 @@ public class WebService extends AsyncTask<String, Response, Response> implements
 			return;
 		}
 
-		if (activity instanceof ConsultTicketActivity) {
+		if (mode == AppMode.CONSULT_TICKET) {
 			TicketService ticketService = new TicketService(activity);
 			ticketService.initConsultTicketActivity(response);
 		}
 
-		if (activity instanceof CreateTicketActivity) {
+		if (mode == AppMode.CREATE_TICKET) {
 			TicketService ticketService = new TicketService(activity);
 			ticketService.initCreateTicketActivity(response);
 		}
 
-		if (activity instanceof CartographyTicketsActivity) {
+		if (mode == AppMode.FIND_TICKETS) {
 			TicketService ticketService = new TicketService(activity);
 			ticketService.initCartographyTicketActivity(response);
 		}
 
-		if (activity instanceof LoginActivity) {
+		if (mode == AppMode.LOGIN) {
 			ILoginService loginService = LoginService.getInstance(activity);
 			loginService.initSession(response);
 		}
 
-		if (activity instanceof RegisterActivity) {
+		if (mode == AppMode.REGISTER) {
 			ILoginService loginService = LoginService.getInstance(activity);
 			loginService.finishRegister(response);
 		}

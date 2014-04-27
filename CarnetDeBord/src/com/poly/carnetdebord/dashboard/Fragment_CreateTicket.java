@@ -1,17 +1,22 @@
-package com.poly.carnetdebord.ticket;
+package com.poly.carnetdebord.dashboard;
 
 import java.util.ArrayList;
 
 import android.app.Activity;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.RadioGroup;
 import android.widget.RadioGroup.OnCheckedChangeListener;
 import android.widget.TextView;
@@ -22,8 +27,18 @@ import com.poly.carnetdebord.geolocation.Geolocation;
 import com.poly.carnetdebord.geolocation.GeolocationService;
 import com.poly.carnetdebord.geolocation.IGeolocationService;
 import com.poly.carnetdebord.localstorage.SessionManager;
+import com.poly.carnetdebord.ticket.ITicketService;
+import com.poly.carnetdebord.ticket.Ticket;
+import com.poly.carnetdebord.ticket.TicketService;
+import com.poly.carnetdebord.webservice.WebService;
 
-public class CreateTicketActivity extends Activity {
+/*
+ * Fragment used to create a ticket
+ * 
+ * 
+ */
+
+public class Fragment_CreateTicket extends Fragment {
 	// Service
 	private ITicketService ticketService;
 	private IGeolocationService geolocationService;
@@ -46,7 +61,7 @@ public class CreateTicketActivity extends Activity {
 
 	public ITicketService getTicketService() {
 		if (ticketService == null) {
-			ticketService = new TicketService(this);
+			ticketService = new TicketService(getActivity());
 		}
 		return ticketService;
 	}
@@ -56,7 +71,7 @@ public class CreateTicketActivity extends Activity {
 	}
 
 	private SessionManager initSession() {
-		session = new SessionManager(this);
+		session = new SessionManager(getActivity());
 		return session;
 	}
 
@@ -64,33 +79,34 @@ public class CreateTicketActivity extends Activity {
 		session.clearSession();
 	}
 
-	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_create_ticket);
+	private View fragmentView;
 
-		geolocationService = new GeolocationService(this);
+	@Override
+	public View onCreateView(LayoutInflater inflater, ViewGroup container,
+			Bundle savedInstanceState) {
+		View rootView = inflater.inflate(R.layout.fragment_create_ticket,
+				container, false);
+		fragmentView = rootView;
+		geolocationService = new GeolocationService(getActivity());
 		lm = geolocationService.start();
 		if (lm != null) {
 			lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 35000, 0,
 					(LocationListener) geolocationService);
 		}
 
-		typeRadioGroup = (RadioGroup) findViewById(R.id.cb_ticket_rbg);
+		typeRadioGroup = (RadioGroup) fragmentView
+				.findViewById(R.id.cb_ticket_rbg);
 		typeRadioGroup.setOnCheckedChangeListener(onCheckedChangeListener);
-		additionalInfEditText = (EditText) findViewById(R.id.cb_ticket_more_information_edit);
-		stateCheckBox = (CheckBox) findViewById(R.id.cb_ticket_state);
+		additionalInfEditText = (EditText) fragmentView
+				.findViewById(R.id.cb_ticket_more_information_edit);
+		stateCheckBox = (CheckBox) fragmentView
+				.findViewById(R.id.cb_ticket_state);
 		stateCheckBox.setOnClickListener(onClickListener);
 
-		submitButton = (Button) findViewById(R.id.cb_ticket_submit);
+		submitButton = (Button) fragmentView
+				.findViewById(R.id.cb_ticket_submit);
 		submitButton.setOnClickListener(onClickListener);
-	}
-
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.create_ticket, menu);
-		return true;
+		return rootView;
 	}
 
 	OnClickListener onClickListener = new OnClickListener() {
@@ -99,15 +115,16 @@ public class CreateTicketActivity extends Activity {
 		public void onClick(View v) {
 			switch (v.getId()) {
 			case R.id.cb_ticket_submit:
-				titleEditText = (EditText) findViewById(R.id.cb_ticket_title);
-				contentEditText = (EditText) findViewById(R.id.cb_ticket_content);
+				titleEditText = (EditText) fragmentView
+						.findViewById(R.id.cb_ticket_title);
+				contentEditText = (EditText) fragmentView
+						.findViewById(R.id.cb_ticket_content);
 				if (titleEditText.getText() == null
 						|| titleEditText.getText().toString().isEmpty()
 						|| contentEditText.getText() == null
 						|| contentEditText.getText().toString().isEmpty()) {
-					Toast.makeText(CreateTicketActivity.this,
-							WARNING_EMPTY_FIELD_MESSAGE, Toast.LENGTH_SHORT)
-							.show();
+					Toast.makeText(getActivity(), WARNING_EMPTY_FIELD_MESSAGE,
+							Toast.LENGTH_SHORT).show();
 					return;
 				}
 
@@ -115,7 +132,8 @@ public class CreateTicketActivity extends Activity {
 				ticket.setTitle(titleEditText.getText().toString().trim());
 				ticket.setMessage(contentEditText.getText().toString().trim());
 				ticket.setType(typeSelected);
-				additionalInfEditText = (EditText) findViewById(R.id.cb_ticket_more_information_edit);
+				additionalInfEditText = (EditText) fragmentView
+						.findViewById(R.id.cb_ticket_more_information_edit);
 				if (additionalInfEditText.getText() != null
 						&& !additionalInfEditText.getText().toString()
 								.isEmpty()) {
@@ -136,7 +154,8 @@ public class CreateTicketActivity extends Activity {
 				ticketService = getTicketService();
 				ticketService.saveLocalTicket(ticket);
 
-				locationTextView = (TextView) findViewById(R.id.cb_ticket_location);
+				locationTextView = (TextView) fragmentView
+						.findViewById(R.id.cb_ticket_location);
 				Geolocation geolocation = geolocationService.getGeolocation();
 				geolocation.setAddress(String.valueOf(locationTextView
 						.getText()));
@@ -194,6 +213,6 @@ public class CreateTicketActivity extends Activity {
 						0, (LocationListener) geolocationService);
 			}
 		}
-
 	}
+
 }
