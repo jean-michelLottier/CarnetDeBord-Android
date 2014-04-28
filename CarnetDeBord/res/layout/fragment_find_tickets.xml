@@ -33,7 +33,7 @@
         android:id="@+id/cb_ticket_map_carto"
         android:name="com.testing.svma.MainActivity"
         android:layout_width="match_parent"
-        android:layout_height="190dp"
+        android:layout_height="250dp"
         android:layout_alignTop="@+id/lin_layout_carto"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="19dp"

@@ -94,7 +94,7 @@ public class SessionManager {
 	}
 
 	public Date getBirthDate() {
-		DateFormat format = new SimpleDateFormat("yyyy/mm/dd", Locale.ENGLISH);
+		DateFormat format = new SimpleDateFormat("yyyy/MM/dd", Locale.CANADA_FRENCH);
 		String dateString = sharedPreferences.getString(KEY_BIRTH_DATE, null);
 		 Date date = new Date();
 		

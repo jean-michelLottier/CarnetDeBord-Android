@@ -1,27 +1,47 @@
 
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:paddingBottom="@dimen/activity_vertical_margin"
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin" >
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:orientation="vertical"
+    android:gravity="center" >
 
+    <TextView
+        android:id="@+id/profile_welcome_text"
+        android:gravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+    	android:text="Bienvenue sur votre carnet de bord Inconnu!"
+    	android:textSize="20sp"/>
+    
+    <ImageView 
+	        android:layout_width="90dp"
+	        android:layout_height="90dp"
+	        android:padding="5dp"
+	        android:src="@drawable/ghost_profile"
+        	android:layout_marginBottom="10dp" />
+    
     <Button
-        android:id="@+id/button1"
+        android:id="@+id/profile_createticket"
         android:layout_width="350dp"
         android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_marginTop="118dp"
+        android:text="@string/label_create_ticket" />
+    
+    <Button
+        android:id="@+id/profile_lasttickets"
+        android:layout_width="350dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="70dp"
         android:text="@string/label_derniers_billets" />
 
     <Button
-        android:id="@+id/button2"
+        android:id="@+id/profile_findtickets"
         android:layout_width="350dp"
         android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/button1"
-        android:layout_below="@+id/button1"
         android:text="@string/label_proposition_billets" />
 
-</RelativeLayout>
+</LinearLayout>

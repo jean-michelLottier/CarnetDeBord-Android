@@ -147,18 +147,16 @@ public class Fragment_CreateTicket extends Fragment {
 
 				// todo remplacer le userid par le userid qui est dans le
 				// sessionManager
-				// session = initSession();
-				// ticket.setUserID(session.getUserID());
-				ticket.setUserID(1);
+				session = initSession();
+				ticket.setUserID(session.getUserID());
+				//ticket.setUserID(1);
 
 				ticketService = getTicketService();
 				ticketService.saveLocalTicket(ticket);
 
-				locationTextView = (TextView) fragmentView
-						.findViewById(R.id.cb_ticket_location);
+				locationTextView = (TextView) fragmentView.findViewById(R.id.cb_ticket_location);
 				Geolocation geolocation = geolocationService.getGeolocation();
-				geolocation.setAddress(String.valueOf(locationTextView
-						.getText()));
+				geolocation.setAddress(String.valueOf(locationTextView.getText()));
 				geolocation.setTicket(ticket);
 				geolocationService.saveLocalGeolocation(geolocation);
 				geolocationService.saveRemoteGeolocation(geolocation);

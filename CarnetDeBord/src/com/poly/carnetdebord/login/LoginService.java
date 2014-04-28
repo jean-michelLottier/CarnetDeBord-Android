@@ -117,22 +117,14 @@ public class LoginService implements ILoginService {
 		case Response.OK:
 			System.out.println("**** valide ****");
 			SessionManager session = new SessionManager(activity);
-			ObjectMapper mapper = new ObjectMapper();
-			User user;
-			try {
-				user = mapper.readValue(response.getContent(), User.class);
-				session.initPlayerSession(user);
-			} catch (JsonParseException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (JsonMappingException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+			
+			User user = new User();
+			user.generateUser(response.getContent());
+			System.out.println(response.getContent());
+			System.out.println(user.getFirstname());
 
+			session.initPlayerSession(user);
+			
 			activity.startActivityForResult(
 					new Intent(activity.getApplicationContext(),
 							DashBoardActivity.class), FinishCode.REQUEST_EXIT);

@@ -111,7 +111,7 @@ public class DashBoardActivity extends FragmentActivity {
 		}
 	}
 
-	private void selectItem(int position) {
+	public void selectItem(int position) {
 		ItemMenu item = listMenu.get(position);
 		if (item.getFragment() != null) {
 			getSupportFragmentManager().beginTransaction()
@@ -137,6 +137,53 @@ public class DashBoardActivity extends FragmentActivity {
 		mDrawerList.setItemChecked(position, true);
 		setTitle(mTitle);
 		mDrawerLayout.closeDrawer(mDrawerList);
+	}
+	
+	public void selectItemMode(int mode) {
+		System.out.println("**selectItemMode**");
+		ItemMenu item = null;
+		int count = 0;
+		int position = 0;
+		for(ItemMenu i :listMenu)
+		{
+			if (i.getMode()!=null)
+			{
+				if(i.getMode()==mode)
+				{
+					item = i;
+					position = count;
+					break;
+				}
+			}
+			count++;
+		}
+		if(item!=null)
+		{
+			if (item.getFragment() != null) {
+				getSupportFragmentManager().beginTransaction()
+						.replace(R.id.content_frame, item.getFragment()).commit();
+			}
+			if (item.getMode() != null) {
+	
+				CarnetDeBordDialogFragment dialogFragment = new CarnetDeBordDialogFragment();
+				switch (item.getMode()) {
+				case AppMode.DISCONNECT:
+					dialogFragment.showDisconnectDashboardDialog(this);
+					break;
+				case AppMode.QUIT:
+					dialogFragment.showQuitAPIBoxDialog(this);
+					break;
+				default:
+					appMode.setMode(item.getMode());
+					break;
+				}
+			}
+			mTitle = listMenu.get(position).getName();
+			// update selected item and title, then close the drawer
+			mDrawerList.setItemChecked(position, true);
+			setTitle(mTitle);
+			mDrawerLayout.closeDrawer(mDrawerList);
+		}
 	}
 
 	@Override

@@ -4,6 +4,7 @@ import android.location.Location;
 import android.location.LocationManager;
 
 public interface IGeolocationService {
+	
 	public LocationManager start();
 
 	public void pause();

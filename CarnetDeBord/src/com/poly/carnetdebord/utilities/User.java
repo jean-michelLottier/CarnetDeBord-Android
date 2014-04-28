@@ -1,8 +1,14 @@
 package com.poly.carnetdebord.utilities;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 import java.util.TimeZone;
+
+import com.fasterxml.jackson.core.JsonFactory;
+import com.jayway.jsonpath.JsonPath;
 
 /*
  * A class which represents the user of the application
@@ -95,5 +101,34 @@ public class User {
 
 	public void setActivate(boolean activate) {
 		this.activate = activate;
+	}
+	
+	public void generateUser(String u)
+	{
+		this.login = JsonPath.read(u, "$.login");
+		String date = JsonPath.read(u, "$.creationDate");
+		try {
+
+			this.creationDate = new SimpleDateFormat("EEEE MMM dd HH:mm:ss z yyyy").parse(date);
+			
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		Integer n = JsonPath.read(u, "$.userID");
+		this.id = n.longValue();
+		date = JsonPath.read(u, "$.birthDate");
+        
+		try {
+			this.birthdate = new SimpleDateFormat("EEEE MMM dd HH:mm:ss z yyyy").parse(date);
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		this.firstname = JsonPath.read(u, "$.firstName");
+		this.name = JsonPath.read(u, "$.name");
+		this.password = JsonPath.read(u, "$.password");
+		this.activate = true;
+		
 	}
 }

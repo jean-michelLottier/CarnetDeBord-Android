@@ -10,7 +10,7 @@
 	<LinearLayout 
     android:id="@+id/lin_layout_myItinary"
 	    android:layout_width="100dp"
-	    android:layout_height="100dp"
+	    android:layout_height="200dp"
 	    android:orientation="vertical" >
 	
 	    <!-- Pretty hint text, and maxLines -->

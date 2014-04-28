@@ -237,6 +237,8 @@ public class CarnetDeBordDialogFragment extends DialogFragment {
 						{
 							activity.setResult(FinishCode.RESULT_QUIT,null);
 						}
+						SessionManager session = new SessionManager(activity);
+						session.clearSession();
 						activity.finish();
 					}
 				});

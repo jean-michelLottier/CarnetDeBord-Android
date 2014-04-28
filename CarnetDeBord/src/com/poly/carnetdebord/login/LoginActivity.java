@@ -16,6 +16,7 @@ import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.poly.carnetdebord.R;
 import com.poly.carnetdebord.dialogbox.CarnetDeBordDialogFragment;
+import com.poly.carnetdebord.localstorage.SessionManager;
 import com.poly.carnetdebord.utilities.AppMode;
 import com.poly.carnetdebord.utilities.Encryption;
 import com.poly.carnetdebord.utilities.User;
@@ -24,6 +25,8 @@ import com.poly.carnetdebord.webservice.WebService;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.os.BatteryManager;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.KeyEvent;
@@ -62,6 +65,13 @@ public class LoginActivity extends Activity {
 		super.onCreate(savedInstanceState);
 
 		setContentView(R.layout.activity_login);
+		IntentFilter iFilter = new IntentFilter(Intent.ACTION_BATTERY_CHANGED);
+		Intent batteryStatus = this.registerReceiver(null, iFilter);
+
+		int currentBattery = batteryStatus.getIntExtra(
+				BatteryManager.EXTRA_LEVEL, -1);
+		SessionManager session = new SessionManager(this);
+		session.setBatteryLevel(currentBattery);
 		AppMode.getInstance().setMode(AppMode.LOGIN);
 
 		crypto = new Encryption(this);
@@ -186,6 +196,8 @@ public class LoginActivity extends Activity {
 		user.setLogin("random@wawa.com");
 		user.setPassword("testtest");
 
+		//user.setLogin(mEmail);
+		//user.setPassword(mEncryptedPassword);
 		ObjectMapper mapper = new ObjectMapper();
 		Writer stringWriter = new StringWriter();
 		mapper.writeValue(stringWriter, user);

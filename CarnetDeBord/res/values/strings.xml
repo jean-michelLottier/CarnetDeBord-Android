@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">CarnetDeBord</string>
+    <string name="app_name">Carnet De Bord</string>
     <string name="action_settings">Settings</string>
     <string name="hello_world">Hello world!</string>
     <string name="title_activity_create_ticket">Localisation</string>
@@ -22,8 +22,9 @@
     <string name="cb_ticket_map_description">CARTE</string>
     <string name="cb_ticket_stats_description">STATISTIQUES</string>
     <string name="title_activity_register">RegisterActivity</string>
-    <string name="title_activity_dash_board">DashBoardActivity</string>
+    <string name="title_activity_dash_board">Carnet De Bord</string>
     <string name="label_derniers_billets">Derniers billets consultés</string>
+    <string name="label_create_ticket">Créer un billet</string>
     <string name="label_proposition_billets">Proposition de billets</string>
     <string name="title_activity_cartography_tickets">CartographyTicketsActivity</string>
     <string name="label_filtrer_par">Filtrer par</string>

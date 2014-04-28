@@ -6,12 +6,15 @@ import org.json.simple.JSONObject;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.app.Service;
 import android.content.Context;
+import android.content.Intent;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.IBinder;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -28,7 +31,7 @@ import com.poly.carnetdebord.webservice.Response;
 import com.poly.carnetdebord.webservice.WebService;
 import com.poly.carnetdebord.webservice.WebService.RequestMethod;
 
-public class GeolocationService implements IGeolocationService,
+public class GeolocationService extends Service implements IGeolocationService,
 		LocationListener {
 
 	private final Activity activity;
@@ -53,6 +56,7 @@ public class GeolocationService implements IGeolocationService,
 
 	@Override
 	public void onLocationChanged(Location location) {
+		System.out.println("**location changed**");
 		this.location = location;
 		if (mode==AppMode.CREATE_TICKET) {
 			String urlPath = WebService.MAP_GOOGLE_URL_PATH.replace("latitude",
@@ -246,5 +250,11 @@ public class GeolocationService implements IGeolocationService,
 		geolocation.setLongitude(location.getLongitude());
 
 		return geolocation;
+	}
+
+	@Override
+	public IBinder onBind(Intent intent) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

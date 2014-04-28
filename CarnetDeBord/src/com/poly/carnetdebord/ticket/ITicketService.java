@@ -8,8 +8,6 @@ import com.poly.carnetdebord.webservice.Response;
 public interface ITicketService {
 	public static final String KEY_IS_LOCAL_TICKET = "isLocalTicket";
 
-	public ArrayList<Ticket> getUserTickets();
-
 	public void saveLocalTicket(Ticket ticket);
 
 	public ArrayList<Ticket> researchByTitle(String title);

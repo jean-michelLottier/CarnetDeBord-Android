@@ -79,25 +79,6 @@ public class TicketService implements ITicketService {
 	}
 
 	@Override
-	public ArrayList<Ticket> getUserTickets() {
-		System.out
-				.println("***********TicketService getUserTickets***********");
-		String urlPath = WebService.TICKET_URL_PATH.replace("userid", "1")
-				.replace("ticketid", "1");
-		System.out.println("urlpath : " + urlPath);
-		// webService = new WebService();
-		AsyncTask<String, Response, Response> response = new WebService(activity,RequestMethod.GET).execute(urlPath);
-		try {
-			System.out.println("status : " + response.get().getStatus()
-					+ ", content : " + response.get().getContent());
-		} catch (Exception e) {
-			System.out.println("!!!!!!!!!!!!!!PROBLEM!!!!!!!!!!!!!!");
-		}
-		System.out.println("*************************************************");
-		return null;
-	}
-
-	@Override
 	public void saveLocalTicket(Ticket ticket) {
 		if (ticket == null) {
 			return;
@@ -317,6 +298,7 @@ public class TicketService implements ITicketService {
 		if (response == null || response.getStatus() == Response.BAD_REQUEST) {
 			CarnetDeBordDialogFragment dialogFragment = new CarnetDeBordDialogFragment();
 			dialogFragment.showDisconnectedBoxDialog(activity,response.getUrl(), RequestMethod.GET);
+			System.out.println("adresse: fail");
 			return;
 		}
 		String address = null;
@@ -327,6 +309,7 @@ public class TicketService implements ITicketService {
 					"results").toString());
 			json = (JSONObject) new JSONParser().parse(jsona.get(0).toString());
 			address = json.get("formatted_address").toString();
+			System.out.println("adresse: "+address);
 		} catch (org.json.simple.parser.ParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
