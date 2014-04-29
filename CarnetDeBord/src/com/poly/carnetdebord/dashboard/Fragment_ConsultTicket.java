@@ -59,6 +59,8 @@ public class Fragment_ConsultTicket extends Fragment {
 			Bundle savedInstanceState) {
 		View rootView = inflater.inflate(R.layout.fragment_consult_ticket,
 				container, false);
+		
+		
 		long ticketID = 4;
 		long userID = 25;
 

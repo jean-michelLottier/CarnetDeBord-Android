@@ -40,4 +40,14 @@ public interface ITicketDAO {
 	 * @return Ticket otherwise null.
 	 */
 	public Ticket findTicketByID(long id);
+	
+	/**
+	 * <p>
+	 * Find tickets by user id.
+	 * </p>
+	 * 
+	 * @param id
+	 * @return Tickets otherwise an empty array.
+	 */
+	public ArrayList<Ticket> findTicketsByUserID(long id);
 }

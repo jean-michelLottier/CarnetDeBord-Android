@@ -105,6 +105,31 @@ public class TicketDAO extends DAOBase implements ITicketDAO {
 
 		return cursorToTicket(cursor);
 	}
+	
+	@Override
+	public ArrayList<Ticket> findTicketsByUserID(long id) {
+		if (id < 0) {
+			return null;
+		}
+
+		String strQuery = "SELECT * FROM " + TICKET_TABLE_NAME + " WHERE "
+				+ TICKET_USER_FK + " = ?";
+
+		Cursor cursor = sqLiteDatabase.rawQuery(strQuery,
+				new String[] { String.valueOf(id) });
+
+		ArrayList<Ticket> tickets = new ArrayList<Ticket>();
+		if (cursor == null || cursor.getCount() == 0) {
+			return tickets;
+		}
+
+		while (cursor.moveToNext()) {
+			Ticket ticket = cursorToTicket(cursor);
+			tickets.add(ticket);
+		}
+		return tickets;
+	}
+	
 
 	private Ticket cursorToTicket(Cursor cursor) {
 		Ticket ticket = new Ticket();

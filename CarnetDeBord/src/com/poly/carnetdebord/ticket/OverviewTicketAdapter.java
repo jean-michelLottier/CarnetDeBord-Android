@@ -66,8 +66,8 @@ public class OverviewTicketAdapter extends ArrayAdapter<Geolocation> {
 						Fragment_ConsultTicket.class);
 				intent.putExtra(TicketService.PARAMETER_TICKET_ID, geolocation
 						.getTicket().getId());
-				// intent.putExtra(TicketService.PARAMETER_USER_ID,
-				// session.getUserID());
+				intent.putExtra(TicketService.PARAMETER_USER_ID,
+				 session.getUserID());
 				intent.putExtra(TicketService.KEY_IS_LOCAL_TICKET, true);
 				context.startActivity(intent);
 			}

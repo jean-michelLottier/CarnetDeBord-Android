@@ -162,16 +162,16 @@ public class Fragment_CreateTicket extends Fragment {
 				geolocationService.saveRemoteGeolocation(geolocation);
 
 				// ////////TEST//////////////
-				ArrayList<Ticket> tickets = ticketService
-						.researchByTitle(ticket.getTitle());
-				if (tickets != null && !tickets.isEmpty()) {
-					System.out.println("size : " + tickets.size());
-					for (Ticket current : tickets) {
-						current.show();
-					}
-				} else {
-					System.out.println("tickets NULL OR EMPTY!");
-				}
+//				ArrayList<Ticket> tickets = ticketService
+//						.researchByTitle(ticket.getTitle());
+//				if (tickets != null && !tickets.isEmpty()) {
+//					System.out.println("size : " + tickets.size());
+//					for (Ticket current : tickets) {
+//						current.show();
+//					}
+//				} else {
+//					System.out.println("tickets NULL OR EMPTY!");
+//				}
 				// ////////END TEST////////////
 				break;
 			case R.id.cb_ticket_state:
